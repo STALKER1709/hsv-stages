@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gestion des Encadreurs – StagesPro Cameroun</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { inter: ['Inter', 'sans-serif'] },
+          colors: {
+            primary: { 50:'#eff6ff', 100:'#dbeafe', 500:'#3b82f6', 600:'#2563eb', 700:'#1d4ed8', 800:'#1e3a5f', 900:'#0f172a' },
+            emerald: { 400:'#34d399', 500:'#10b981', 600:'#059669' }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .sidebar-link { border-left: 3px solid transparent; transition: all 0.15s; }
+    .sidebar-link:hover { background: rgba(59,130,246,0.12); color:#93c5fd; border-left-color:#3b82f6; }
+    .sidebar-link.active { background: rgba(59,130,246,0.18); color:#60a5fa; border-left-color:#3b82f6; }
+    .card-hover { transition: transform 0.2s, box-shadow 0.2s; }
+    .card-hover:hover { transform: translateY(-3px); box-shadow: 0 12px 40px rgba(0,0,0,0.1); }
+    ::-webkit-scrollbar { width:4px; height:4px; }
+    ::-webkit-scrollbar-track { background:#f1f5f9; }
+    ::-webkit-scrollbar-thumb { background:#94a3b8; border-radius:10px; }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 font-inter"
+  x-data="{
+    sidebarOpen: false,
+    addModal: false,
+    assignModal: false,
+    selectedEncadreur: null,
+    encadreurs: [
+      {
+        id: 1,
+        nom: 'Mme Tchamba',
+        prenom: 'Léa',
+        pole: 'GL',
+        poleLabel: 'Génie Logiciel',
+        specialite: 'Développement Full-Stack & Architecture logicielle',
+        email: 'l.tchamba@stagespro.cm',
+        telephone: '+237 699 001 122',
+        nbStagiaires: 30,
+        tauxPresence: 94,
+        satisfaction: 4.7,
+        modules: ['JavaScript', 'React', 'Git', 'SQL', 'Architecture MVC'],
+        statut: 'Actif',
+        color: 'blue'
+      },
+      {
+        id: 2,
+        nom: 'M. Nkemdirim',
+        prenom: 'Denis',
+        pole: 'SR',
+        poleLabel: 'Systèmes & Réseaux',
+        specialite: 'Administration Réseaux & Cybersécurité',
+        email: 'd.nkemdirim@stagespro.cm',
+        telephone: '+237 677 443 211',
+        nbStagiaires: 28,
+        tauxPresence: 91,
+        satisfaction: 4.5,
+        modules: ['Cisco CCNA', 'Linux Admin', 'Pare-feu', 'VPN', 'Monitoring'],
+        statut: 'Actif',
+        color: 'emerald'
+      },
+      {
+        id: 3,
+        nom: 'M. Bello',
+        prenom: 'Hamidou',
+        pole: 'SE',
+        poleLabel: 'Systèmes Embarqués',
+        specialite: 'Microcontrôleurs, Arduino, Raspberry Pi & IoT',
+        email: 'h.bello@stagespro.cm',
+        telephone: '+237 655 778 900',
+        nbStagiaires: 20,
+        tauxPresence: 88,
+        satisfaction: 4.3,
+        modules: ['Arduino', 'Raspberry Pi', 'C embarqué', 'MQTT', 'Capteurs IoT'],
+        statut: 'Actif',
+        color: 'amber'
+      }
+    ]
+  }"
+>
+
+<!-- SIDEBAR -->
+<aside class="fixed top-0 left-0 h-full w-64 z-40 flex flex-col overflow-y-auto" style="background:#0f172a;"
+  :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'"
+  x-transition:enter="transition duration-200" x-transition:enter-start="-translate-x-full"
+  x-transition:enter-end="translate-x-0" x-transition:leave="transition duration-200"
+  x-transition:leave-start="translate-x-0" x-transition:leave-end="-translate-x-full">
+  <div class="flex items-center gap-3 px-6 py-5 border-b border-white/10 shrink-0">
+    <div class="w-9 h-9 rounded-xl flex items-center justify-center shrink-0" style="background:#10b981;">
+      <i class="fa-solid fa-graduation-cap text-white text-sm"></i>
+    </div>
+    <div>
+      <div class="text-white font-bold text-sm">StagesPro</div>
+      <div class="text-slate-400 text-xs">Cameroun · Admin</div>
+    </div>
+  </div>
+  <nav class="flex-1 py-4">
+    <div class="px-4 mb-2"><p class="text-slate-500 text-xs uppercase tracking-widest font-semibold px-2">Principal</p></div>
+    <a href="dashboard-admin.html" class="sidebar-link flex items-center gap-3 px-6 py-2.5 text-slate-400 text-sm"><i class="fa-solid fa-house-chimney w-4 text-xs text-center"></i>Tableau de bord</a>
+    <a href="gestion-stagiaires.html" class="sidebar-link flex items-center gap-3 px-6 py-2.5 text-slate-400 text-sm"><i class="fa-solid fa-users w-4 text-xs text-center"></i>Stagiaires</a>
+    <a href="gestion-encadreurs.html" class="sidebar-link active flex items-center gap-3 px-6 py-2.5 text-slate-200 text-sm"><i class="fa-solid fa-chalkboard-teacher w-4 text-xs text-center"></i>Encadreurs</a>
+    <a href="planning.html" class="sidebar-link flex items-center gap-3 px-6 py-2.5 text-slate-400 text-sm"><i class="fa-solid fa-calendar-days w-4 text-xs text-center"></i>Planning</a>
+    <a href="cours.html" class="sidebar-link flex items-center gap-3 px-6 py-2.5 text-slate-400 text-sm"><i class="fa-solid fa-book-open w-4 text-xs text-center"></i>Cours & Modules</a>
+    <a href="presences.html" class="sidebar-link flex items-center gap-3 px-6 py-2.5 text-slate-400 text-sm"><i class="fa-solid fa-clipboard-check w-4 text-xs text-center"></i>Présences</a>
+    <div class="px-4 mt-4 mb-2"><p class="text-slate-500 text-xs uppercase tracking-widest font-semibold px-2">Finance</p></div>
+    <a href="budget.html" class="sidebar-link flex items-center gap-3 px-6 py-2.5 text-slate-400 text-sm"><i class="fa-solid fa-chart-pie w-4 text-xs text-center"></i>Budget</a>
+    <a href="paiements.html" class="sidebar-link flex items-center gap-3 px-6 py-2.5 text-slate-400 text-sm"><i class="fa-solid fa-credit-card w-4 text-xs text-center"></i>Paiements</a>
+    <div class="px-4 mt-4 mb-2"><p class="text-slate-500 text-xs uppercase tracking-widest font-semibold px-2">Analyse</p></div>
+    <a href="rapports.html" class="sidebar-link flex items-center gap-3 px-6 py-2.5 text-slate-400 text-sm"><i class="fa-solid fa-chart-bar w-4 text-xs text-center"></i>Rapports</a>
+    <div class="px-4 mt-4 mb-2"><p class="text-slate-500 text-xs uppercase tracking-widest font-semibold px-2">Système</p></div>
+    <a href="parametres.html" class="sidebar-link flex items-center gap-3 px-6 py-2.5 text-slate-400 text-sm"><i class="fa-solid fa-gear w-4 text-xs text-center"></i>Paramètres</a>
+    <a href="index.html" class="sidebar-link flex items-center gap-3 px-6 py-2.5 text-slate-400 text-sm"><i class="fa-solid fa-arrow-right-from-bracket w-4 text-xs text-center"></i>Déconnexion</a>
+  </nav>
+  <div class="px-5 py-4 border-t border-white/10 flex items-center gap-3 shrink-0">
+    <div class="w-8 h-8 rounded-full bg-primary-600 flex items-center justify-center text-white text-xs font-bold shrink-0">AD</div>
+    <div class="flex-1 min-w-0">
+      <p class="text-white text-xs font-semibold truncate">Administrateur</p>
+      <p class="text-slate-500 text-xs truncate">admin@stagespro.cm</p>
+    </div>
+  </div>
+</aside>
+
+<div class="fixed inset-0 bg-black/50 z-30 md:hidden" x-show="sidebarOpen" @click="sidebarOpen=false" x-transition></div>
+
+<!-- MAIN -->
+<div class="md:ml-64 min-h-screen flex flex-col pb-16 md:pb-0">
+
+  <!-- Header -->
+  <header class="bg-white border-b border-slate-200 px-4 md:px-6 py-3.5 flex items-center justify-between sticky top-0 z-20 shadow-sm">
+    <div class="flex items-center gap-3">
+      <button @click="sidebarOpen=!sidebarOpen" class="md:hidden p-2 rounded-lg hover:bg-slate-100 text-slate-500">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+      <div>
+        <h1 class="text-sm font-bold text-slate-800 md:text-base">Gestion des Encadreurs</h1>
+        <p class="text-xs text-slate-400 hidden sm:block">3 encadreurs actifs · Saison 2025</p>
+      </div>
+    </div>
+    <button @click="addModal=true"
+      class="flex items-center gap-1.5 px-3 py-1.5 text-sm font-semibold text-white rounded-lg transition-colors"
+      style="background:#1e3a5f;">
+      <i class="fa-solid fa-plus text-xs"></i>
+      <span class="hidden sm:inline">Ajouter un encadreur</span>
+    </button>
+  </header>
+
+  <main class="flex-1 p-4 md:p-6 space-y-6">
+
+    <!-- Top stats -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      <div class="bg-white rounded-xl p-4 border border-slate-100 shadow-sm text-center">
+        <p class="text-2xl font-black text-slate-800">3</p>
+        <p class="text-xs text-slate-500 font-medium">Encadreurs actifs</p>
+      </div>
+      <div class="bg-white rounded-xl p-4 border border-slate-100 shadow-sm text-center">
+        <p class="text-2xl font-black text-slate-800">78</p>
+        <p class="text-xs text-slate-500 font-medium">Stagiaires encadrés</p>
+      </div>
+      <div class="bg-white rounded-xl p-4 border border-slate-100 shadow-sm text-center">
+        <p class="text-2xl font-black text-emerald-600">91%</p>
+        <p class="text-xs text-slate-500 font-medium">Présence moyenne</p>
+      </div>
+      <div class="bg-white rounded-xl p-4 border border-slate-100 shadow-sm text-center">
+        <p class="text-2xl font-black text-amber-500">4,5<span class="text-sm">/5</span></p>
+        <p class="text-xs text-slate-500 font-medium">Satisfaction globale</p>
+      </div>
+    </div>
+
+    <!-- Encadreur Cards Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+      <template x-for="enc in encadreurs" :key="enc.id">
+        <div class="card-hover bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+
+          <!-- Card top banner -->
+          <div class="h-16 relative"
+            :class="enc.color === 'blue' ? 'bg-gradient-to-r from-blue-800 to-blue-600' : enc.color === 'emerald' ? 'bg-gradient-to-r from-emerald-700 to-emerald-500' : 'bg-gradient-to-r from-amber-600 to-amber-400'">
+            <div class="absolute top-3 right-3">
+              <span class="text-xs bg-white/20 text-white px-2 py-0.5 rounded-full font-semibold backdrop-blur-sm" x-text="enc.poleLabel"></span>
+            </div>
+          </div>
+
+          <!-- Photo placeholder -->
+          <div class="px-5 -mt-8 flex items-end justify-between mb-3">
+            <div class="w-16 h-16 rounded-2xl border-4 border-white shadow-lg flex items-center justify-center text-xl font-black text-white"
+              :class="enc.color === 'blue' ? 'bg-blue-700' : enc.color === 'emerald' ? 'bg-emerald-600' : 'bg-amber-500'"
+              x-text="enc.prenom[0] + enc.nom.split(' ')[1][0]">
+            </div>
+            <div class="flex gap-1.5 mt-10">
+              <span class="text-xs px-2 py-0.5 rounded-full font-bold"
+                :class="enc.pole === 'GL' ? 'bg-blue-100 text-blue-700' : enc.pole === 'SR' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'"
+                x-text="enc.pole"></span>
+              <span class="text-xs px-2 py-0.5 rounded-full font-bold bg-green-100 text-green-700" x-text="enc.statut"></span>
+            </div>
+          </div>
+
+          <!-- Name & specialty -->
+          <div class="px-5 pb-4">
+            <h3 class="text-base font-black text-slate-800" x-text="enc.nom + ' ' + enc.prenom"></h3>
+            <p class="text-xs text-slate-500 mt-0.5 leading-relaxed" x-text="enc.specialite"></p>
+
+            <!-- Contact -->
+            <div class="mt-3 space-y-1.5">
+              <div class="flex items-center gap-2 text-xs text-slate-500">
+                <i class="fa-solid fa-envelope text-slate-400 w-3"></i>
+                <span x-text="enc.email"></span>
+              </div>
+              <div class="flex items-center gap-2 text-xs text-slate-500">
+                <i class="fa-solid fa-phone text-slate-400 w-3"></i>
+                <span x-text="enc.telephone"></span>
+              </div>
+            </div>
+
+            <!-- Stats row -->
+            <div class="mt-4 grid grid-cols-3 gap-2 text-center">
+              <div class="bg-slate-50 rounded-xl p-2">
+                <p class="text-lg font-black text-slate-800" x-text="enc.nbStagiaires"></p>
+                <p class="text-xs text-slate-400">Stagiaires</p>
+              </div>
+              <div class="rounded-xl p-2"
+                :class="enc.tauxPresence >= 90 ? 'bg-green-50' : enc.tauxPresence >= 80 ? 'bg-yellow-50' : 'bg-red-50'">
+                <p class="text-lg font-black"
+                  :class="enc.tauxPresence >= 90 ? 'text-green-600' : enc.tauxPresence >= 80 ? 'text-yellow-600' : 'text-red-500'"
+                  x-text="enc.tauxPresence + '%'"></p>
+                <p class="text-xs text-slate-400">Présence</p>
+              </div>
+              <div class="bg-amber-50 rounded-xl p-2">
+                <p class="text-lg font-black text-amber-600" x-text="enc.satisfaction + '★'"></p>
+                <p class="text-xs text-slate-400">Satisfaction</p>
+              </div>
+            </div>
+
+            <!-- Progress bars -->
+            <div class="mt-4 space-y-2">
+              <div>
+                <div class="flex justify-between text-xs text-slate-500 mb-1">
+                  <span>Taux de présence</span>
+                  <span class="font-semibold" x-text="enc.tauxPresence + '%'"></span>
+                </div>
+                <div class="bg-slate-100 rounded-full h-1.5">
+                  <div class="h-1.5 rounded-full transition-all"
+                    :class="enc.tauxPresence >= 90 ? 'bg-green-500' : enc.tauxPresence >= 80 ? 'bg-yellow-400' : 'bg-red-400'"
+                    :style="'width:' + enc.tauxPresence + '%'"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between text-xs text-slate-500 mb-1">
+                  <span>Satisfaction stagiaires</span>
+                  <span class="font-semibold" x-text="enc.satisfaction + '/5'"></span>
+                </div>
+                <div class="bg-slate-100 rounded-full h-1.5">
+                  <div class="h-1.5 rounded-full bg-amber-400" :style="'width:' + (enc.satisfaction/5*100) + '%'"></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Modules tags -->
+            <div class="mt-4">
+              <p class="text-xs font-semibold text-slate-500 mb-2">Modules enseignés</p>
+              <div class="flex flex-wrap gap-1.5">
+                <template x-for="mod in enc.modules" :key="mod">
+                  <span class="text-xs px-2 py-0.5 rounded-full font-medium"
+                    :class="enc.color === 'blue' ? 'bg-blue-50 text-blue-600' : enc.color === 'emerald' ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'"
+                    x-text="mod"></span>
+                </template>
+              </div>
+            </div>
+
+            <!-- Action buttons -->
+            <div class="mt-5 flex gap-2">
+              <button
+                @click="selectedEncadreur = enc; assignModal = true;"
+                class="flex-1 py-2 text-xs font-semibold text-white rounded-xl transition-colors"
+                :class="enc.color === 'blue' ? 'bg-blue-700 hover:bg-blue-800' : enc.color === 'emerald' ? 'bg-emerald-600 hover:bg-emerald-700' : 'bg-amber-500 hover:bg-amber-600'">
+                <i class="fa-solid fa-user-plus mr-1"></i> Assigner stagiaire
+              </button>
+              <button class="px-3 py-2 text-xs font-semibold text-slate-600 border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors">
+                <i class="fa-solid fa-pen"></i>
+              </button>
+              <button class="px-3 py-2 text-xs font-semibold text-slate-400 border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors">
+                <i class="fa-solid fa-ellipsis-vertical"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </template>
+    </div>
+
+    <!-- Performance Comparison Table -->
+    <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+      <div class="px-5 py-4 border-b border-slate-100">
+        <h2 class="text-sm font-bold text-slate-800">Tableau de performance comparatif</h2>
+        <p class="text-xs text-slate-400">Métriques clés par encadreur · Saison 2025</p>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm min-w-[600px]">
+          <thead>
+            <tr class="bg-slate-50 border-b border-slate-100">
+              <th class="text-left px-5 py-3 text-xs font-semibold text-slate-500 uppercase">Encadreur</th>
+              <th class="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase">Pôle</th>
+              <th class="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase">Stagiaires</th>
+              <th class="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase">Taux présence</th>
+              <th class="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase">Satisfaction</th>
+              <th class="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase">Modules</th>
+              <th class="text-left px-4 py-3 text-xs font-semibold text-slate-500 uppercase">Statut</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-50">
+            <!-- Mme Tchamba -->
+            <tr class="hover:bg-slate-50 transition-colors">
+              <td class="px-5 py-3">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-8 h-8 rounded-full bg-blue-700 flex items-center justify-center text-white text-xs font-bold shrink-0">LT</div>
+                  <div>
+                    <p class="font-semibold text-slate-800">Mme Tchamba Léa</p>
+                    <p class="text-xs text-slate-400">l.tchamba@stagespro.cm</p>
+                  </div>
+                </div>
+              </td>
+              <td class="px-4 py-3"><span class="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-bold">GL</span></td>
+              <td class="px-4 py-3">
+                <span class="text-sm font-bold text-slate-800">30</span>
+                <span class="text-xs text-slate-400"> / 30</span>
+              </td>
+              <td class="px-4 py-3">
+                <div class="flex items-center gap-2">
+                  <div class="flex-1 bg-slate-100 rounded-full h-1.5 w-16">
+                    <div class="h-1.5 rounded-full bg-green-500" style="width:94%;"></div>
+                  </div>
+                  <span class="text-xs font-bold text-green-600">94%</span>
+                </div>
+              </td>
+              <td class="px-4 py-3">
+                <div class="flex items-center gap-1">
+                  <span class="text-sm font-bold text-amber-500">4,7</span>
+                  <div class="flex gap-0.5">
+                    <i class="fa-solid fa-star text-amber-400 text-xs"></i>
+                    <i class="fa-solid fa-star text-amber-400 text-xs"></i>
+                    <i class="fa-solid fa-star text-amber-400 text-xs"></i>
+                    <i class="fa-solid fa-star text-amber-400 text-xs"></i>
+                    <i class="fa-solid fa-star-half-stroke text-amber-400 text-xs"></i>
+                  </div>
+                </div>
+              </td>
+              <td class="px-4 py-3 text-xs text-slate-500">5 modules</td>
+              <td class="px-4 py-3"><span class="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-bold">Actif</span></td>
+            </tr>
+            <!-- M. Nkemdirim -->
+            <tr class="hover:bg-slate-50 transition-colors">
+              <td class="px-5 py-3">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-8 h-8 rounded-full bg-emerald-600 flex items-center justify-center text-white text-xs font-bold shrink-0">DN</div>
+                  <div>
+                    <p class="font-semibold text-slate-800">M. Nkemdirim Denis</p>
+                    <p class="text-xs text-slate-400">d.nkemdirim@stagespro.cm</p>
+                  </div>
+                </div>
+              </td>
+              <td class="px-4 py-3"><span class="text-xs bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full font-bold">SR</span></td>
+              <td class="px-4 py-3">
+                <span class="text-sm font-bold text-slate-800">28</span>
+                <span class="text-xs text-slate-400"> / 30</span>
+              </td>
+              <td class="px-4 py-3">
+                <div class="flex items-center gap-2">
+                  <div class="flex-1 bg-slate-100 rounded-full h-1.5 w-16">
+                    <div class="h-1.5 rounded-full bg-green-500" style="width:91%;"></div>
+                  </div>
+                  <span class="text-xs font-bold text-green-600">91%</span>
+                </div>
+              </td>
+              <td class="px-4 py-3">
+                <div class="flex items-center gap-1">
+                  <span class="text-sm font-bold text-amber-500">4,5</span>
+                  <div class="flex gap-0.5">
+                    <i class="fa-solid fa-star text-amber-400 text-xs"></i>
+                    <i class="fa-solid fa-star text-amber-400 text-xs"></i>
+                    <i class="fa-solid fa-star text-amber-400 text-xs"></i>
+                    <i class="fa-solid fa-star text-amber-400 text-xs"></i>
+                    <i class="fa-solid fa-star-half-stroke text-amber-400 text-xs"></i>
+                  </div>
+                </div>
+              </td>
+              <td class="px-4 py-3 text-xs text-slate-500">5 modules</td>
+              <td class="px-4 py-3"><span class="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-bold">Actif</span></td>
+            </tr>
+            <!-- M. Bello -->
+            <tr class="hover:bg-slate-50 transition-colors">
+              <td class="px-5 py-3">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-8 h-8 rounded-full bg-amber-500 flex items-center justify-center text-white text-xs font-bold shrink-0">HB</div>
+                  <div>
+                    <p class="font-semibold text-slate-800">M. Bello Hamidou</p>
+                    <p class="text-xs text-slate-400">h.bello@stagespro.cm</p>
+                  </div>
+                </div>
+              </td>
+              <td class="px-4 py-3"><span class="text-xs bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full font-bold">SE</span></td>
+              <td class="px-4 py-3">
+                <span class="text-sm font-bold text-slate-800">20</span>
+                <span class="text-xs text-slate-400"> / 25</span>
+              </td>
+              <td class="px-4 py-3">
+                <div class="flex items-center gap-2">
+                  <div class="flex-1 bg-slate-100 rounded-full h-1.5 w-16">
+                    <div class="h-1.5 rounded-full bg-yellow-400" style="width:88%;"></div>
+                  </div>
+                  <span class="text-xs font-bold text-yellow-600">88%</span>
+                </div>
+              </td>
+              <td class="px-4 py-3">
+                <div class="flex items-center gap-1">
+                  <span class="text-sm font-bold text-amber-500">4,3</span>
+                  <div class="flex gap-0.5">
+                    <i class="fa-solid fa-star text-amber-400 text-xs"></i>
+                    <i class="fa-solid fa-star text-amber-400 text-xs"></i>
+                    <i class="fa-solid fa-star text-amber-400 text-xs"></i>
+                    <i class="fa-solid fa-star text-amber-400 text-xs"></i>
+                    <i class="fa-regular fa-star text-amber-300 text-xs"></i>
+                  </div>
+                </div>
+              </td>
+              <td class="px-4 py-3 text-xs text-slate-500">5 modules</td>
+              <td class="px-4 py-3"><span class="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-bold">Actif</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ========== MODAL: AJOUTER ENCADREUR ========== -->
+<div x-show="addModal" @click.self="addModal=false" x-transition
+  class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg overflow-y-auto max-h-[90vh]" @click.stop>
+    <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100 sticky top-0 bg-white z-10">
+      <div>
+        <h2 class="text-base font-bold text-slate-800">Ajouter un encadreur</h2>
+        <p class="text-xs text-slate-400">Renseignez les informations de l'encadreur</p>
+      </div>
+      <button @click="addModal=false" class="p-2 hover:bg-slate-100 rounded-lg text-slate-400">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    <div class="p-6 space-y-4">
+      <!-- Photo placeholder upload -->
+      <div class="flex justify-center">
+        <div class="relative group">
+          <div class="w-20 h-20 rounded-2xl bg-slate-100 flex items-center justify-center border-2 border-dashed border-slate-300 group-hover:border-primary-400 transition-colors cursor-pointer">
+            <div class="text-center">
+              <i class="fa-solid fa-camera text-slate-400 text-xl mb-1"></i>
+              <p class="text-xs text-slate-400">Photo</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Prénom *</label>
+          <input type="text" placeholder="ex: Léa" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-300" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Nom de famille *</label>
+          <input type="text" placeholder="ex: Tchamba" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-300" />
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs font-semibold text-slate-600 mb-1">Adresse email *</label>
+        <input type="email" placeholder="ex: l.tchamba@stagespro.cm" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-300" />
+      </div>
+      <div>
+        <label class="block text-xs font-semibold text-slate-600 mb-1">Numéro de téléphone</label>
+        <input type="tel" placeholder="ex: +237 699 001 122" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-300" />
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Pôle assigné *</label>
+          <select class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-300 text-slate-600">
+            <option value="">Sélectionner...</option>
+            <option>GL – Génie Logiciel</option>
+            <option>SR – Sys & Réseaux</option>
+            <option>SE – Sys Embarqués</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Capacité max. stagiaires</label>
+          <input type="number" min="1" max="40" value="30" class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-300" />
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-xs font-semibold text-slate-600 mb-1">Spécialité / Domaine d'expertise</label>
+        <input type="text" placeholder="ex: Développement Full-Stack & Architecture logicielle"
+          class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-300" />
+      </div>
+
+      <div>
+        <label class="block text-xs font-semibold text-slate-600 mb-1">Modules à enseigner (séparés par des virgules)</label>
+        <textarea rows="2" placeholder="ex: JavaScript, React, Git, SQL..."
+          class="w-full px-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-300 resize-none"></textarea>
+      </div>
+
+      <div>
+        <label class="block text-xs font-semibold text-slate-600 mb-1">Statut</label>
+        <div class="flex gap-4">
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="radio" name="enc_statut" value="Actif" checked />
+            <span class="text-sm font-medium text-green-700">Actif</span>
+          </label>
+          <label class="flex items-center gap-2 cursor-pointer">
+            <input type="radio" name="enc_statut" value="Inactif" />
+            <span class="text-sm font-medium text-red-600">Inactif</span>
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="px-6 py-4 border-t border-slate-100 flex justify-end gap-2 sticky bottom-0 bg-white">
+      <button @click="addModal=false" class="px-4 py-2 text-sm font-semibold border border-slate-200 rounded-lg hover:bg-slate-50 text-slate-600">Annuler</button>
+      <button @click="addModal=false" class="px-4 py-2 text-sm font-semibold text-white rounded-lg" style="background:#1e3a5f;">
+        <i class="fa-solid fa-plus mr-1.5 text-xs"></i>Enregistrer l'encadreur
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== MODAL: ASSIGNER STAGIAIRES ========== -->
+<div x-show="assignModal" @click.self="assignModal=false" x-transition
+  class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md" @click.stop x-show="selectedEncadreur">
+    <div class="flex items-center justify-between px-6 py-4 border-b border-slate-100">
+      <div>
+        <h2 class="text-base font-bold text-slate-800">Assigner des stagiaires</h2>
+        <p class="text-xs text-slate-400" x-text="'À: ' + (selectedEncadreur ? selectedEncadreur.nom + ' ' + selectedEncadreur.prenom : '')"></p>
+      </div>
+      <button @click="assignModal=false" class="p-2 hover:bg-slate-100 rounded-lg text-slate-400">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    <div class="p-5">
+      <div class="relative mb-3">
+        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+        <input type="text" placeholder="Rechercher un stagiaire..."
+          class="w-full pl-9 pr-3 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary-300" />
+      </div>
+      <div class="space-y-2 max-h-52 overflow-y-auto">
+        <label class="flex items-center gap-3 p-2.5 rounded-lg hover:bg-slate-50 cursor-pointer">
+          <input type="checkbox" class="w-4 h-4" />
+          <div class="w-7 h-7 rounded-full bg-blue-100 flex items-center justify-center text-xs font-bold text-blue-700">KE</div>
+          <div class="flex-1">
+            <p class="text-sm font-medium text-slate-800">Kouam Eric</p>
+            <p class="text-xs text-slate-400">IUC – Yaoundé · Licence 3</p>
+          </div>
+          <span class="text-xs bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full">Libre</span>
+        </label>
+        <label class="flex items-center gap-3 p-2.5 rounded-lg hover:bg-slate-50 cursor-pointer">
+          <input type="checkbox" class="w-4 h-4" />
+          <div class="w-7 h-7 rounded-full bg-purple-100 flex items-center justify-center text-xs font-bold text-purple-700">NA</div>
+          <div class="flex-1">
+            <p class="text-sm font-medium text-slate-800">Nkemdirim Awa</p>
+            <p class="text-xs text-slate-400">ESSEC – Douala · Master 1</p>
+          </div>
+          <span class="text-xs bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full">Libre</span>
+        </label>
+        <label class="flex items-center gap-3 p-2.5 rounded-lg hover:bg-slate-50 cursor-pointer">
+          <input type="checkbox" class="w-4 h-4" />
+          <div class="w-7 h-7 rounded-full bg-rose-100 flex items-center justify-center text-xs font-bold text-rose-700">BC</div>
+          <div class="flex-1">
+            <p class="text-sm font-medium text-slate-800">Bella Christelle</p>
+            <p class="text-xs text-slate-400">UCAC – Yaoundé · Licence 3</p>
+          </div>
+          <span class="text-xs bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full">Libre</span>
+        </label>
+        <label class="flex items-center gap-3 p-2.5 rounded-lg hover:bg-slate-50 cursor-pointer">
+          <input type="checkbox" class="w-4 h-4" />
+          <div class="w-7 h-7 rounded-full bg-cyan-100 flex items-center justify-center text-xs font-bold text-cyan-700">NK</div>
+          <div class="flex-1">
+            <p class="text-sm font-medium text-slate-800">Ndom Kevin</p>
+            <p class="text-xs text-slate-400">IUC – Yaoundé · Licence 3</p>
+          </div>
+          <span class="text-xs bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full">Libre</span>
+        </label>
+      </div>
+    </div>
+    <div class="px-5 py-4 border-t border-slate-100 flex justify-end gap-2">
+      <button @click="assignModal=false" class="px-4 py-2 text-sm font-semibold border border-slate-200 rounded-lg hover:bg-slate-50 text-slate-600">Annuler</button>
+      <button @click="assignModal=false" class="px-4 py-2 text-sm font-semibold text-white rounded-lg" style="background:#10b981;">
+        <i class="fa-solid fa-check mr-1.5 text-xs"></i>Confirmer l'assignation
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- MOBILE BOTTOM NAV -->
+<nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 flex md:hidden z-30 shadow-lg">
+  <a href="dashboard-admin.html" class="flex-1 flex flex-col items-center py-2.5 gap-0.5 text-slate-400">
+    <i class="fa-solid fa-house text-base"></i><span class="text-xs">Accueil</span>
+  </a>
+  <a href="gestion-stagiaires.html" class="flex-1 flex flex-col items-center py-2.5 gap-0.5 text-slate-400">
+    <i class="fa-solid fa-users text-base"></i><span class="text-xs">Stagiaires</span>
+  </a>
+  <a href="gestion-encadreurs.html" class="flex-1 flex flex-col items-center py-2.5 gap-0.5" style="color:#1e3a5f;">
+    <i class="fa-solid fa-chalkboard-teacher text-base"></i><span class="text-xs font-semibold">Encadreurs</span>
+  </a>
+  <a href="budget.html" class="flex-1 flex flex-col items-center py-2.5 gap-0.5 text-slate-400">
+    <i class="fa-solid fa-chart-pie text-base"></i><span class="text-xs">Budget</span>
+  </a>
+  <a href="rapports.html" class="flex-1 flex flex-col items-center py-2.5 gap-0.5 text-slate-400">
+    <i class="fa-solid fa-chart-bar text-base"></i><span class="text-xs">Rapports</span>
+  </a>
+</nav>
+
+</body>
+</html>

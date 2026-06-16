@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>StagesPro Cameroun – Programme de Stages en Informatique</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { inter: ['Inter','sans-serif'] },
+          colors: {
+            navy: { 800:'#1e3a5f', 900:'#0f172a' },
+            emerald: { 400:'#34d399', 500:'#10b981', 600:'#059669' }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .hero-bg {
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #065f46 100%);
+    }
+    .glass { background: rgba(255,255,255,0.08); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.15); }
+    .progress-bar { transition: width 1.5s ease-in-out; }
+    @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+    .float { animation: float 3s ease-in-out infinite; }
+    @keyframes fadeInUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+    .fade-in { animation: fadeInUp 0.7s ease forwards; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+<!-- NAVBAR -->
+<nav x-data="{open:false, scrolled:false}" @scroll.window="scrolled = window.scrollY > 50"
+     :class="scrolled ? 'bg-navy-900/95 backdrop-blur-md shadow-xl' : 'bg-transparent'"
+     class="fixed top-0 w-full z-50 transition-all duration-300">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-16">
+      <a href="index.html" class="flex items-center gap-2">
+        <div class="w-9 h-9 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-lg flex items-center justify-center">
+          <i class="fas fa-laptop-code text-white text-sm"></i>
+        </div>
+        <span class="text-white font-bold text-lg">StagesPro<span class="text-emerald-400">CM</span></span>
+      </a>
+      <div class="hidden md:flex items-center gap-8">
+        <a href="programme.html" class="text-slate-300 hover:text-emerald-400 transition text-sm font-medium">Programme</a>
+        <a href="#poles" class="text-slate-300 hover:text-emerald-400 transition text-sm font-medium">Pôles</a>
+        <a href="#temoignages" class="text-slate-300 hover:text-emerald-400 transition text-sm font-medium">Témoignages</a>
+        <a href="login.html" class="text-slate-300 hover:text-white transition text-sm font-medium">Connexion</a>
+        <a href="inscription.html" class="bg-emerald-500 hover:bg-emerald-600 text-white px-5 py-2 rounded-lg text-sm font-semibold transition shadow-lg shadow-emerald-500/30">
+          S'inscrire
+        </a>
+      </div>
+      <button @click="open=!open" class="md:hidden text-white p-2">
+        <i :class="open ? 'fa-xmark' : 'fa-bars'" class="fas text-xl"></i>
+      </button>
+    </div>
+  </div>
+  <!-- Mobile menu -->
+  <div x-show="open" x-transition class="md:hidden bg-navy-900/98 backdrop-blur-md border-t border-white/10">
+    <div class="px-4 py-4 space-y-3">
+      <a href="programme.html" class="block text-slate-300 hover:text-emerald-400 py-2 text-sm font-medium">Programme</a>
+      <a href="#poles" class="block text-slate-300 hover:text-emerald-400 py-2 text-sm font-medium">Pôles</a>
+      <a href="#temoignages" class="block text-slate-300 hover:text-emerald-400 py-2 text-sm font-medium">Témoignages</a>
+      <a href="login.html" class="block text-slate-300 hover:text-white py-2 text-sm font-medium">Connexion</a>
+      <a href="inscription.html" class="block bg-emerald-500 text-white px-4 py-2.5 rounded-lg text-sm font-semibold text-center">S'inscrire</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero-bg min-h-screen flex items-center relative overflow-hidden">
+  <!-- Background image overlay -->
+  <div class="absolute inset-0 opacity-10">
+    <img src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=1400&q=80" class="w-full h-full object-cover"/>
+  </div>
+  <!-- Decorative circles -->
+  <div class="absolute top-20 right-10 w-72 h-72 bg-emerald-500/10 rounded-full blur-3xl"></div>
+  <div class="absolute bottom-20 left-10 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"></div>
+
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32 grid lg:grid-cols-2 gap-12 items-center relative z-10">
+    <div class="fade-in">
+      <div class="inline-flex items-center gap-2 glass px-4 py-2 rounded-full text-emerald-400 text-sm font-medium mb-6">
+        <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
+        Session Juillet – Septembre 2025
+      </div>
+      <h1 class="text-4xl sm:text-5xl lg:text-6xl font-black text-white leading-tight mb-6">
+        Lancez votre<br/>
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">carrière dans</span><br/>
+        le numérique
+      </h1>
+      <p class="text-slate-300 text-lg leading-relaxed mb-8 max-w-lg">
+        Programme structuré de 3 mois pour étudiants en informatique. Projets réels, encadrement professionnel, attestation officielle.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4">
+        <a href="inscription.html" class="bg-emerald-500 hover:bg-emerald-600 text-white px-8 py-4 rounded-xl font-bold text-lg transition shadow-2xl shadow-emerald-500/40 text-center">
+          <i class="fas fa-rocket mr-2"></i>S'inscrire maintenant
+        </a>
+        <a href="programme.html" class="glass hover:bg-white/15 text-white px-8 py-4 rounded-xl font-semibold text-lg transition text-center">
+          <i class="fas fa-play-circle mr-2"></i>Voir le programme
+        </a>
+      </div>
+      <div class="mt-8 flex items-center gap-6">
+        <div class="flex -space-x-3">
+          <img src="https://i.pravatar.cc/40?img=1" class="w-10 h-10 rounded-full border-2 border-emerald-500"/>
+          <img src="https://i.pravatar.cc/40?img=2" class="w-10 h-10 rounded-full border-2 border-emerald-500"/>
+          <img src="https://i.pravatar.cc/40?img=3" class="w-10 h-10 rounded-full border-2 border-emerald-500"/>
+          <img src="https://i.pravatar.cc/40?img=4" class="w-10 h-10 rounded-full border-2 border-emerald-500"/>
+        </div>
+        <p class="text-slate-300 text-sm"><span class="text-emerald-400 font-bold">+80 étudiants</span> inscrits cette session</p>
+      </div>
+    </div>
+    <div class="hidden lg:block">
+      <div class="glass rounded-3xl p-6 float">
+        <img src="https://images.unsplash.com/photo-1531482615713-2afd69097998?w=600&q=80" class="rounded-2xl w-full h-72 object-cover mb-4"/>
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <span class="text-white font-semibold text-sm">Progression globale</span>
+            <span class="text-emerald-400 font-bold text-sm">67%</span>
+          </div>
+          <div class="bg-white/10 rounded-full h-2">
+            <div class="bg-gradient-to-r from-emerald-400 to-cyan-400 h-2 rounded-full w-2/3"></div>
+          </div>
+          <div class="grid grid-cols-3 gap-3 pt-2">
+            <div class="glass rounded-xl p-3 text-center">
+              <div class="text-emerald-400 font-black text-xl">78</div>
+              <div class="text-slate-400 text-xs">Stagiaires</div>
+            </div>
+            <div class="glass rounded-xl p-3 text-center">
+              <div class="text-amber-400 font-black text-xl">3</div>
+              <div class="text-slate-400 text-xs">Pôles</div>
+            </div>
+            <div class="glass rounded-xl p-3 text-center">
+              <div class="text-blue-400 font-black text-xl">3M</div>
+              <div class="text-slate-400 text-xs">Durée</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS BAR -->
+<section class="bg-navy-900 py-8">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+      <div class="text-center">
+        <div class="text-3xl font-black text-emerald-400">80+</div>
+        <div class="text-slate-400 text-sm mt-1">Stagiaires accueillis</div>
+      </div>
+      <div class="text-center border-l border-white/10">
+        <div class="text-3xl font-black text-blue-400">3</div>
+        <div class="text-slate-400 text-sm mt-1">Pôles de formation</div>
+      </div>
+      <div class="text-center border-l border-white/10">
+        <div class="text-3xl font-black text-amber-400">3</div>
+        <div class="text-slate-400 text-sm mt-1">Mois de programme</div>
+      </div>
+      <div class="text-center border-l border-white/10">
+        <div class="text-3xl font-black text-rose-400">50K</div>
+        <div class="text-slate-400 text-sm mt-1">FCFA seulement</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- POLES -->
+<section id="poles" class="py-20 bg-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-14">
+      <span class="text-emerald-600 font-semibold text-sm uppercase tracking-widest">Organisation pédagogique</span>
+      <h2 class="text-3xl sm:text-4xl font-black text-navy-900 mt-2">Choisissez votre pôle</h2>
+      <p class="text-slate-500 mt-3 max-w-xl mx-auto">Trois spécialisations pour couvrir l'ensemble des métiers du numérique au Cameroun.</p>
+    </div>
+    <div class="grid md:grid-cols-3 gap-8">
+      <!-- Pole 1 -->
+      <div class="group relative rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+        <div class="absolute inset-0 bg-gradient-to-br from-blue-600 to-blue-800"></div>
+        <div class="absolute inset-0 opacity-20">
+          <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&q=80" class="w-full h-full object-cover"/>
+        </div>
+        <div class="relative p-8">
+          <div class="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center mb-5">
+            <i class="fas fa-code text-white text-2xl"></i>
+          </div>
+          <h3 class="text-white font-black text-xl mb-3">Génie Logiciel</h3>
+          <p class="text-blue-100 text-sm leading-relaxed mb-5">Développement d'applications, algorithmique, bases de données, APIs REST et projets web full-stack.</p>
+          <ul class="space-y-2 mb-6">
+            <li class="text-blue-100 text-sm flex items-center gap-2"><i class="fas fa-check-circle text-blue-300"></i>PHP / Laravel</li>
+            <li class="text-blue-100 text-sm flex items-center gap-2"><i class="fas fa-check-circle text-blue-300"></i>JavaScript / React</li>
+            <li class="text-blue-100 text-sm flex items-center gap-2"><i class="fas fa-check-circle text-blue-300"></i>MySQL / PostgreSQL</li>
+          </ul>
+          <a href="inscription.html" class="inline-flex items-center gap-2 bg-white text-blue-700 px-5 py-2.5 rounded-lg font-semibold text-sm hover:bg-blue-50 transition">
+            Rejoindre ce pôle <i class="fas fa-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+      <!-- Pole 2 -->
+      <div class="group relative rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+        <div class="absolute inset-0 bg-gradient-to-br from-emerald-600 to-teal-800"></div>
+        <div class="absolute inset-0 opacity-20">
+          <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600&q=80" class="w-full h-full object-cover"/>
+        </div>
+        <div class="relative p-8">
+          <div class="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center mb-5">
+            <i class="fas fa-network-wired text-white text-2xl"></i>
+          </div>
+          <h3 class="text-white font-black text-xl mb-3">Systèmes & Réseaux</h3>
+          <p class="text-emerald-100 text-sm leading-relaxed mb-5">Administration systèmes Linux, configuration réseau, sécurité informatique et infrastructure cloud.</p>
+          <ul class="space-y-2 mb-6">
+            <li class="text-emerald-100 text-sm flex items-center gap-2"><i class="fas fa-check-circle text-emerald-300"></i>Linux / Ubuntu Server</li>
+            <li class="text-emerald-100 text-sm flex items-center gap-2"><i class="fas fa-check-circle text-emerald-300"></i>Cisco / CCNA</li>
+            <li class="text-emerald-100 text-sm flex items-center gap-2"><i class="fas fa-check-circle text-emerald-300"></i>Sécurité réseau</li>
+          </ul>
+          <a href="inscription.html" class="inline-flex items-center gap-2 bg-white text-emerald-700 px-5 py-2.5 rounded-lg font-semibold text-sm hover:bg-emerald-50 transition">
+            Rejoindre ce pôle <i class="fas fa-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+      <!-- Pole 3 -->
+      <div class="group relative rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+        <div class="absolute inset-0 bg-gradient-to-br from-purple-600 to-violet-800"></div>
+        <div class="absolute inset-0 opacity-20">
+          <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?w=600&q=80" class="w-full h-full object-cover"/>
+        </div>
+        <div class="relative p-8">
+          <div class="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center mb-5">
+            <i class="fas fa-microchip text-white text-2xl"></i>
+          </div>
+          <h3 class="text-white font-black text-xl mb-3">Software Engineering</h3>
+          <p class="text-purple-100 text-sm leading-relaxed mb-5">Architecture logicielle, méthodes Agile/Scrum, tests, CI/CD et gestion de projets professionnels.</p>
+          <ul class="space-y-2 mb-6">
+            <li class="text-purple-100 text-sm flex items-center gap-2"><i class="fas fa-check-circle text-purple-300"></i>Architecture MVC</li>
+            <li class="text-purple-100 text-sm flex items-center gap-2"><i class="fas fa-check-circle text-purple-300"></i>Git / GitHub / CI/CD</li>
+            <li class="text-purple-100 text-sm flex items-center gap-2"><i class="fas fa-check-circle text-purple-300"></i>Agile / Scrum</li>
+          </ul>
+          <a href="inscription.html" class="inline-flex items-center gap-2 bg-white text-purple-700 px-5 py-2.5 rounded-lg font-semibold text-sm hover:bg-purple-50 transition">
+            Rejoindre ce pôle <i class="fas fa-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROGRAMME TIMELINE -->
+<section class="py-20 bg-slate-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-14">
+      <span class="text-emerald-600 font-semibold text-sm uppercase tracking-widest">Déroulement</span>
+      <h2 class="text-3xl sm:text-4xl font-black text-navy-900 mt-2">Un programme structuré</h2>
+    </div>
+    <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-md transition">
+        <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center mb-4">
+          <i class="fas fa-tools text-blue-600 text-xl"></i>
+        </div>
+        <span class="text-blue-600 text-xs font-semibold uppercase tracking-wide">Semaines 1-2</span>
+        <h3 class="font-bold text-navy-900 text-lg mt-1 mb-2">Ateliers Pratiques</h3>
+        <p class="text-slate-500 text-sm">Sessions intensives sur les outils et technologies du pôle choisi.</p>
+      </div>
+      <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-md transition">
+        <div class="w-12 h-12 bg-emerald-100 rounded-xl flex items-center justify-center mb-4">
+          <i class="fas fa-users text-emerald-600 text-xl"></i>
+        </div>
+        <span class="text-emerald-600 text-xs font-semibold uppercase tracking-wide">Mois 1-3</span>
+        <h3 class="font-bold text-navy-900 text-lg mt-1 mb-2">Projets en Équipe</h3>
+        <p class="text-slate-500 text-sm">Travail sur des projets réels en équipe de 4-6 personnes avec un encadreur.</p>
+      </div>
+      <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-md transition">
+        <div class="w-12 h-12 bg-amber-100 rounded-xl flex items-center justify-center mb-4">
+          <i class="fas fa-chalkboard-teacher text-amber-600 text-xl"></i>
+        </div>
+        <span class="text-amber-600 text-xs font-semibold uppercase tracking-wide">Chaque semaine</span>
+        <h3 class="font-bold text-navy-900 text-lg mt-1 mb-2">Coaching Hebdomadaire</h3>
+        <p class="text-slate-500 text-sm">Séances de suivi individuel avec votre encadreur technique.</p>
+      </div>
+      <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-md transition">
+        <div class="w-12 h-12 bg-rose-100 rounded-xl flex items-center justify-center mb-4">
+          <i class="fas fa-clipboard-check text-rose-600 text-xl"></i>
+        </div>
+        <span class="text-rose-600 text-xs font-semibold uppercase tracking-wide">Mois 2</span>
+        <h3 class="font-bold text-navy-900 text-lg mt-1 mb-2">Évaluation Intermédiaire</h3>
+        <p class="text-slate-500 text-sm">Bilan de mi-parcours pour ajuster le programme et renforcer les points faibles.</p>
+      </div>
+      <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-md transition">
+        <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mb-4">
+          <i class="fas fa-presentation text-purple-600 text-xl"></i>
+        </div>
+        <span class="text-purple-600 text-xs font-semibold uppercase tracking-wide">Mois 3 – Fin</span>
+        <h3 class="font-bold text-navy-900 text-lg mt-1 mb-2">Soutenance Finale</h3>
+        <p class="text-slate-500 text-sm">Présentation officielle du projet devant un jury d'encadreurs et de professionnels.</p>
+      </div>
+      <div class="bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl p-6 shadow-sm hover:shadow-md transition">
+        <div class="w-12 h-12 bg-white/20 rounded-xl flex items-center justify-center mb-4">
+          <i class="fas fa-award text-white text-xl"></i>
+        </div>
+        <span class="text-emerald-100 text-xs font-semibold uppercase tracking-wide">À la fin</span>
+        <h3 class="font-bold text-white text-lg mt-1 mb-2">Attestation Officielle</h3>
+        <p class="text-emerald-100 text-sm">Certificat de stage reconnu, téléchargeable en PDF avec QR code de vérification.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ETABLISSEMENTS -->
+<section class="py-16 bg-white">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-10">
+      <p class="text-slate-500 text-sm font-medium uppercase tracking-widest">Établissements partenaires</p>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+      <div class="border-2 border-slate-100 hover:border-emerald-300 rounded-2xl p-6 text-center transition group cursor-pointer">
+        <div class="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:bg-blue-200 transition">
+          <i class="fas fa-university text-blue-600 text-2xl"></i>
+        </div>
+        <h4 class="font-bold text-navy-900 text-sm">IAI Cameroun</h4>
+        <p class="text-slate-400 text-xs mt-1">Institut Africain d'Informatique</p>
+      </div>
+      <div class="border-2 border-slate-100 hover:border-emerald-300 rounded-2xl p-6 text-center transition group cursor-pointer">
+        <div class="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:bg-emerald-200 transition">
+          <i class="fas fa-graduation-cap text-emerald-600 text-2xl"></i>
+        </div>
+        <h4 class="font-bold text-navy-900 text-sm">ISSAM</h4>
+        <p class="text-slate-400 text-xs mt-1">Institut Supérieur du Sahel</p>
+      </div>
+      <div class="border-2 border-slate-100 hover:border-emerald-300 rounded-2xl p-6 text-center transition group cursor-pointer">
+        <div class="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:bg-amber-200 transition">
+          <i class="fas fa-school text-amber-600 text-2xl"></i>
+        </div>
+        <h4 class="font-bold text-navy-900 text-sm">Univ. SIANTOU</h4>
+        <p class="text-slate-400 text-xs mt-1">Université SIANTOU</p>
+      </div>
+      <div class="border-2 border-slate-100 hover:border-emerald-300 rounded-2xl p-6 text-center transition group cursor-pointer">
+        <div class="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3 group-hover:bg-purple-200 transition">
+          <i class="fas fa-building-columns text-purple-600 text-2xl"></i>
+        </div>
+        <h4 class="font-bold text-navy-900 text-sm">ISESTMA</h4>
+        <p class="text-slate-400 text-xs mt-1">Institut Supérieur</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEMOIGNAGES -->
+<section id="temoignages" class="py-20 bg-slate-50">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="text-center mb-14">
+      <span class="text-emerald-600 font-semibold text-sm uppercase tracking-widest">Témoignages</span>
+      <h2 class="text-3xl sm:text-4xl font-black text-navy-900 mt-2">Ce que disent nos stagiaires</h2>
+    </div>
+    <div class="grid md:grid-cols-3 gap-8">
+      <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+        <div class="flex items-center gap-1 text-amber-400 mb-4">
+          <i class="fas fa-star text-sm"></i><i class="fas fa-star text-sm"></i><i class="fas fa-star text-sm"></i><i class="fas fa-star text-sm"></i><i class="fas fa-star text-sm"></i>
+        </div>
+        <p class="text-slate-600 text-sm leading-relaxed mb-5">"Ce programme m'a permis de travailler sur de vrais projets Laravel. Après 3 mois, j'ai décroché mon premier CDD. L'encadrement est vraiment professionnel."</p>
+        <div class="flex items-center gap-3">
+          <img src="https://i.pravatar.cc/48?img=11" class="w-12 h-12 rounded-full object-cover"/>
+          <div>
+            <div class="font-semibold text-navy-900 text-sm">Jean-Baptiste Mballa</div>
+            <div class="text-slate-400 text-xs">IAI Cameroun – Génie Logiciel</div>
+          </div>
+        </div>
+      </div>
+      <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+        <div class="flex items-center gap-1 text-amber-400 mb-4">
+          <i class="fas fa-star text-sm"></i><i class="fas fa-star text-sm"></i><i class="fas fa-star text-sm"></i><i class="fas fa-star text-sm"></i><i class="fas fa-star text-sm"></i>
+        </div>
+        <p class="text-slate-600 text-sm leading-relaxed mb-5">"Les ateliers pratiques sur Linux et Cisco m'ont donné une base solide. L'attestation est reconnue par les recruteurs. Je recommande à tous mes camarades !"</p>
+        <div class="flex items-center gap-3">
+          <img src="https://i.pravatar.cc/48?img=5" class="w-12 h-12 rounded-full object-cover"/>
+          <div>
+            <div class="font-semibold text-navy-900 text-sm">Sandrine Atangana</div>
+            <div class="text-slate-400 text-xs">ISSAM – Systèmes & Réseaux</div>
+          </div>
+        </div>
+      </div>
+      <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100">
+        <div class="flex items-center gap-1 text-amber-400 mb-4">
+          <i class="fas fa-star text-sm"></i><i class="fas fa-star text-sm"></i><i class="fas fa-star text-sm"></i><i class="fas fa-star text-sm"></i><i class="fas fa-star-half-alt text-sm"></i>
+        </div>
+        <p class="text-slate-600 text-sm leading-relaxed mb-5">"J'ai appris Git, Scrum et comment gérer un projet en équipe. Le coaching hebdomadaire est un vrai plus. Le tarif de 50 000 FCFA est très accessible."</p>
+        <div class="flex items-center gap-3">
+          <img src="https://i.pravatar.cc/48?img=15" class="w-12 h-12 rounded-full object-cover"/>
+          <div>
+            <div class="font-semibold text-navy-900 text-sm">Rodrigue Nkeng</div>
+            <div class="text-slate-400 text-xs">SIANTOU – Software Engineering</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA SECTION -->
+<section class="hero-bg py-20 relative overflow-hidden">
+  <div class="absolute inset-0 opacity-5">
+    <img src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=1400&q=80" class="w-full h-full object-cover"/>
+  </div>
+  <div class="max-w-4xl mx-auto px-4 text-center relative z-10">
+    <h2 class="text-3xl sm:text-5xl font-black text-white mb-4">Prêt à démarrer votre<br/><span class="text-emerald-400">parcours professionnel ?</span></h2>
+    <p class="text-slate-300 text-lg mb-4">Places limitées · Session Juillet – Septembre 2025</p>
+    <p class="text-emerald-400 font-bold text-2xl mb-8">50 000 FCFA · Paiement Orange Money / MTN MoMo</p>
+
+    <!-- Countdown -->
+    <div x-data="{
+      days: 0, hours: 0, minutes: 0, seconds: 0,
+      init() {
+        const target = new Date('2025-07-01T00:00:00');
+        setInterval(() => {
+          const now = new Date();
+          const diff = target - now;
+          if (diff > 0) {
+            this.days = Math.floor(diff / 86400000);
+            this.hours = Math.floor((diff % 86400000) / 3600000);
+            this.minutes = Math.floor((diff % 3600000) / 60000);
+            this.seconds = Math.floor((diff % 60000) / 1000);
+          }
+        }, 1000);
+      }
+    }" class="flex justify-center gap-4 mb-10">
+      <div class="glass px-5 py-3 rounded-xl text-center min-w-[70px]">
+        <div class="text-white font-black text-2xl" x-text="days">14</div>
+        <div class="text-slate-400 text-xs">Jours</div>
+      </div>
+      <div class="glass px-5 py-3 rounded-xl text-center min-w-[70px]">
+        <div class="text-white font-black text-2xl" x-text="hours">08</div>
+        <div class="text-slate-400 text-xs">Heures</div>
+      </div>
+      <div class="glass px-5 py-3 rounded-xl text-center min-w-[70px]">
+        <div class="text-white font-black text-2xl" x-text="minutes">32</div>
+        <div class="text-slate-400 text-xs">Minutes</div>
+      </div>
+      <div class="glass px-5 py-3 rounded-xl text-center min-w-[70px]">
+        <div class="text-white font-black text-2xl" x-text="seconds">10</div>
+        <div class="text-slate-400 text-xs">Secondes</div>
+      </div>
+    </div>
+
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <a href="inscription.html" class="bg-emerald-500 hover:bg-emerald-600 text-white px-10 py-4 rounded-xl font-bold text-lg transition shadow-2xl shadow-emerald-500/40">
+        <i class="fas fa-user-plus mr-2"></i>Je m'inscris maintenant
+      </a>
+      <a href="https://wa.me/237600000000" target="_blank" class="glass hover:bg-white/15 text-white px-10 py-4 rounded-xl font-semibold text-lg transition flex items-center justify-center gap-2">
+        <i class="fab fa-whatsapp text-green-400 text-xl"></i>Contacter via WhatsApp
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="bg-navy-900 py-12">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid md:grid-cols-4 gap-8 mb-10">
+      <div class="col-span-2 md:col-span-1">
+        <div class="flex items-center gap-2 mb-4">
+          <div class="w-9 h-9 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-lg flex items-center justify-center">
+            <i class="fas fa-laptop-code text-white text-sm"></i>
+          </div>
+          <span class="text-white font-bold text-lg">StagesPro<span class="text-emerald-400">CM</span></span>
+        </div>
+        <p class="text-slate-400 text-sm leading-relaxed">Programme structuré d'accueil de stagiaires académiques en informatique au Cameroun.</p>
+      </div>
+      <div>
+        <h4 class="text-white font-semibold text-sm mb-4">Navigation</h4>
+        <ul class="space-y-2">
+          <li><a href="programme.html" class="text-slate-400 hover:text-emerald-400 text-sm transition">Programme</a></li>
+          <li><a href="inscription.html" class="text-slate-400 hover:text-emerald-400 text-sm transition">S'inscrire</a></li>
+          <li><a href="login.html" class="text-slate-400 hover:text-emerald-400 text-sm transition">Connexion</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="text-white font-semibold text-sm mb-4">Pôles</h4>
+        <ul class="space-y-2">
+          <li><span class="text-slate-400 text-sm">Génie Logiciel</span></li>
+          <li><span class="text-slate-400 text-sm">Systèmes & Réseaux</span></li>
+          <li><span class="text-slate-400 text-sm">Software Engineering</span></li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="text-white font-semibold text-sm mb-4">Contact</h4>
+        <ul class="space-y-2">
+          <li class="flex items-center gap-2 text-slate-400 text-sm"><i class="fas fa-map-marker-alt text-emerald-400"></i>Yaoundé, Cameroun</li>
+          <li class="flex items-center gap-2 text-slate-400 text-sm"><i class="fab fa-whatsapp text-green-400"></i>+237 600 000 000</li>
+          <li class="flex items-center gap-2 text-slate-400 text-sm"><i class="fas fa-envelope text-emerald-400"></i>contact@stagespro.cm</li>
+        </ul>
+      </div>
+    </div>
+    <div class="border-t border-white/10 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <p class="text-slate-500 text-sm">© 2025 StagesPro Cameroun. Tous droits réservés.</p>
+      <div class="flex items-center gap-4">
+        <a href="https://wa.me/237600000000" target="_blank" class="w-9 h-9 bg-green-600 hover:bg-green-500 rounded-lg flex items-center justify-center transition">
+          <i class="fab fa-whatsapp text-white text-sm"></i>
+        </a>
+        <a href="#" class="w-9 h-9 bg-blue-600 hover:bg-blue-500 rounded-lg flex items-center justify-center transition">
+          <i class="fab fa-facebook text-white text-sm"></i>
+        </a>
+        <a href="#" class="w-9 h-9 bg-sky-500 hover:bg-sky-400 rounded-lg flex items-center justify-center transition">
+          <i class="fab fa-twitter text-white text-sm"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

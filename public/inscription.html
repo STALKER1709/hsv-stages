@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Inscription – StagesPro Cameroun</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet"/>
+  <script>tailwind.config={theme:{extend:{fontFamily:{inter:['Inter','sans-serif']},colors:{navy:{800:'#1e3a5f',900:'#0f172a'}}}}}</script>
+  <style>body{font-family:'Inter',sans-serif;}</style>
+</head>
+<body class="bg-slate-50 min-h-screen">
+
+<!-- NAV -->
+<nav class="bg-navy-900 shadow-xl">
+  <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+    <a href="index.html" class="flex items-center gap-2">
+      <div class="w-9 h-9 bg-gradient-to-br from-emerald-400 to-emerald-600 rounded-lg flex items-center justify-center">
+        <i class="fas fa-laptop-code text-white text-sm"></i>
+      </div>
+      <span class="text-white font-bold text-lg">StagesPro<span class="text-emerald-400">CM</span></span>
+    </a>
+    <a href="login.html" class="text-slate-300 hover:text-white text-sm transition">Déjà inscrit ? <span class="text-emerald-400 font-semibold">Connexion</span></a>
+  </div>
+</nav>
+
+<div class="max-w-3xl mx-auto px-4 py-12"
+     x-data="{
+       step: 1,
+       form: {
+         nom:'', prenom:'', email:'', telephone:'', whatsapp:'',
+         etablissement:'', filiere:'', niveau:'',
+         pole:'', paiement:''
+       },
+       nextStep() { if(this.step < 3) this.step++ },
+       prevStep() { if(this.step > 1) this.step-- }
+     }">
+
+  <!-- Progress indicator -->
+  <div class="mb-8">
+    <div class="flex items-center justify-between mb-2">
+      <span class="text-sm text-slate-500">Étape <span x-text="step"></span> sur 3</span>
+      <span class="text-sm font-semibold text-emerald-600" x-text="step===1 ? 'Informations personnelles' : step===2 ? 'Informations académiques' : 'Choix du programme'"></span>
+    </div>
+    <div class="bg-slate-200 rounded-full h-2">
+      <div class="bg-gradient-to-r from-emerald-500 to-teal-500 h-2 rounded-full transition-all duration-500"
+           :style="`width: ${(step/3)*100}%`"></div>
+    </div>
+    <div class="flex justify-between mt-3">
+      <div class="flex flex-col items-center gap-1">
+        <div :class="step >= 1 ? 'bg-emerald-500 text-white' : 'bg-slate-200 text-slate-500'"
+             class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition">1</div>
+        <span class="text-xs text-slate-500 hidden sm:block">Identité</span>
+      </div>
+      <div class="flex flex-col items-center gap-1">
+        <div :class="step >= 2 ? 'bg-emerald-500 text-white' : 'bg-slate-200 text-slate-500'"
+             class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition">2</div>
+        <span class="text-xs text-slate-500 hidden sm:block">Académique</span>
+      </div>
+      <div class="flex flex-col items-center gap-1">
+        <div :class="step >= 3 ? 'bg-emerald-500 text-white' : 'bg-slate-200 text-slate-500'"
+             class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition">3</div>
+        <span class="text-xs text-slate-500 hidden sm:block">Programme</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden">
+    <!-- Header -->
+    <div class="bg-gradient-to-r from-navy-900 to-navy-800 px-8 py-6">
+      <h1 class="text-white font-black text-2xl">Inscription au programme</h1>
+      <p class="text-slate-300 text-sm mt-1">Session Juillet – Septembre 2025 · 50 000 FCFA</p>
+    </div>
+
+    <div class="p-8">
+
+      <!-- STEP 1 -->
+      <div x-show="step===1" x-transition>
+        <h2 class="text-navy-900 font-bold text-lg mb-6 flex items-center gap-2">
+          <i class="fas fa-user text-emerald-500"></i> Informations personnelles
+        </h2>
+        <div class="grid sm:grid-cols-2 gap-5">
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Nom <span class="text-rose-500">*</span></label>
+            <input x-model="form.nom" type="text" placeholder="Ex: MBALLA"
+                   class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition"/>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Prénom <span class="text-rose-500">*</span></label>
+            <input x-model="form.prenom" type="text" placeholder="Ex: Jean-Baptiste"
+                   class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition"/>
+          </div>
+          <div class="sm:col-span-2">
+            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Email <span class="text-rose-500">*</span></label>
+            <input x-model="form.email" type="email" placeholder="votre@email.com"
+                   class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition"/>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Téléphone <span class="text-rose-500">*</span></label>
+            <div class="relative">
+              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">+237</span>
+              <input x-model="form.telephone" type="tel" placeholder="6XX XXX XXX"
+                     class="w-full border border-slate-200 rounded-xl pl-12 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 transition"/>
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1.5">
+              <i class="fab fa-whatsapp text-green-500 mr-1"></i>WhatsApp
+            </label>
+            <div class="relative">
+              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">+237</span>
+              <input x-model="form.whatsapp" type="tel" placeholder="6XX XXX XXX"
+                     class="w-full border border-slate-200 rounded-xl pl-12 pr-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 transition"/>
+            </div>
+            <p class="text-xs text-slate-400 mt-1">Laisser vide si identique au téléphone</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2 -->
+      <div x-show="step===2" x-transition>
+        <h2 class="text-navy-900 font-bold text-lg mb-6 flex items-center gap-2">
+          <i class="fas fa-graduation-cap text-emerald-500"></i> Informations académiques
+        </h2>
+        <div class="space-y-5">
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Établissement <span class="text-rose-500">*</span></label>
+            <select x-model="form.etablissement"
+                    class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 transition bg-white">
+              <option value="">Sélectionner votre établissement</option>
+              <option value="IAI">IAI Cameroun</option>
+              <option value="ISSAM">ISSAM</option>
+              <option value="SIANTOU">Université SIANTOU</option>
+              <option value="ISESTMA">ISESTMA</option>
+              <option value="AUTRE">Autre établissement</option>
+            </select>
+          </div>
+          <div x-show="form.etablissement === 'AUTRE'">
+            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Précisez votre établissement</label>
+            <input type="text" placeholder="Nom de votre établissement"
+                   class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 transition"/>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Filière <span class="text-rose-500">*</span></label>
+            <input x-model="form.filiere" type="text" placeholder="Ex: Génie Informatique, Réseaux & Télécoms..."
+                   class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 transition"/>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Niveau d'études <span class="text-rose-500">*</span></label>
+            <select x-model="form.niveau"
+                    class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 transition bg-white">
+              <option value="">Sélectionner votre niveau</option>
+              <option value="L1">Licence 1 (L1 / BTS1)</option>
+              <option value="L2">Licence 2 (L2 / BTS2)</option>
+              <option value="L3">Licence 3 (L3)</option>
+              <option value="M1">Master 1 (M1)</option>
+              <option value="M2">Master 2 (M2)</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 3 -->
+      <div x-show="step===3" x-transition>
+        <h2 class="text-navy-900 font-bold text-lg mb-6 flex items-center gap-2">
+          <i class="fas fa-code-branch text-emerald-500"></i> Choix du programme
+        </h2>
+
+        <!-- Pole selection -->
+        <div class="mb-6">
+          <label class="block text-sm font-semibold text-slate-700 mb-3">Pôle souhaité <span class="text-rose-500">*</span></label>
+          <div class="grid sm:grid-cols-3 gap-3">
+            <label :class="form.pole==='genie' ? 'ring-2 ring-blue-500 bg-blue-50' : 'bg-white border border-slate-200'"
+                   class="rounded-2xl p-4 cursor-pointer hover:border-blue-300 transition block">
+              <input type="radio" x-model="form.pole" value="genie" class="sr-only"/>
+              <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center mb-3">
+                <i class="fas fa-code text-blue-600"></i>
+              </div>
+              <div class="font-semibold text-navy-900 text-sm">Génie Logiciel</div>
+              <div class="text-slate-400 text-xs mt-1">Dev web, APIs, BDD</div>
+            </label>
+            <label :class="form.pole==='reseaux' ? 'ring-2 ring-emerald-500 bg-emerald-50' : 'bg-white border border-slate-200'"
+                   class="rounded-2xl p-4 cursor-pointer hover:border-emerald-300 transition block">
+              <input type="radio" x-model="form.pole" value="reseaux" class="sr-only"/>
+              <div class="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center mb-3">
+                <i class="fas fa-network-wired text-emerald-600"></i>
+              </div>
+              <div class="font-semibold text-navy-900 text-sm">Systèmes & Réseaux</div>
+              <div class="text-slate-400 text-xs mt-1">Linux, Cisco, Sécu</div>
+            </label>
+            <label :class="form.pole==='software' ? 'ring-2 ring-purple-500 bg-purple-50' : 'bg-white border border-slate-200'"
+                   class="rounded-2xl p-4 cursor-pointer hover:border-purple-300 transition block">
+              <input type="radio" x-model="form.pole" value="software" class="sr-only"/>
+              <div class="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center mb-3">
+                <i class="fas fa-microchip text-purple-600"></i>
+              </div>
+              <div class="font-semibold text-navy-900 text-sm">Software Eng.</div>
+              <div class="text-slate-400 text-xs mt-1">Agile, Git, CI/CD</div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Payment -->
+        <div class="mb-6">
+          <label class="block text-sm font-semibold text-slate-700 mb-3">Mode de paiement <span class="text-rose-500">*</span></label>
+          <div class="bg-amber-50 border border-amber-200 rounded-2xl p-4 mb-4 flex items-center gap-3">
+            <i class="fas fa-info-circle text-amber-500 text-lg"></i>
+            <div>
+              <p class="text-amber-800 font-bold text-sm">Montant : 50 000 FCFA</p>
+              <p class="text-amber-700 text-xs mt-0.5">Frais d'encadrement et de formation – Session 3 mois</p>
+            </div>
+          </div>
+          <div class="grid sm:grid-cols-3 gap-3">
+            <label :class="form.paiement==='orange' ? 'ring-2 ring-orange-500 bg-orange-50' : 'bg-white border border-slate-200'"
+                   class="rounded-2xl p-4 cursor-pointer hover:border-orange-300 transition block text-center">
+              <input type="radio" x-model="form.paiement" value="orange" class="sr-only"/>
+              <div class="text-3xl mb-2">🟠</div>
+              <div class="font-semibold text-slate-800 text-sm">Orange Money</div>
+              <div class="text-slate-400 text-xs mt-1">#144#</div>
+            </label>
+            <label :class="form.paiement==='mtn' ? 'ring-2 ring-yellow-500 bg-yellow-50' : 'bg-white border border-slate-200'"
+                   class="rounded-2xl p-4 cursor-pointer hover:border-yellow-300 transition block text-center">
+              <input type="radio" x-model="form.paiement" value="mtn" class="sr-only"/>
+              <div class="text-3xl mb-2">🟡</div>
+              <div class="font-semibold text-slate-800 text-sm">MTN MoMo</div>
+              <div class="text-slate-400 text-xs mt-1">*126#</div>
+            </label>
+            <label :class="form.paiement==='especes' ? 'ring-2 ring-slate-500 bg-slate-50' : 'bg-white border border-slate-200'"
+                   class="rounded-2xl p-4 cursor-pointer hover:border-slate-300 transition block text-center">
+              <input type="radio" x-model="form.paiement" value="especes" class="sr-only"/>
+              <div class="text-3xl mb-2">💵</div>
+              <div class="font-semibold text-slate-800 text-sm">Espèces</div>
+              <div class="text-slate-400 text-xs mt-1">Au bureau</div>
+            </label>
+          </div>
+
+          <!-- Orange Money details -->
+          <div x-show="form.paiement==='orange'" class="mt-4 bg-orange-50 border border-orange-200 rounded-xl p-4">
+            <p class="text-orange-800 text-sm font-semibold mb-1">Instructions Orange Money</p>
+            <p class="text-orange-700 text-xs">Envoyez 50 000 FCFA au numéro <strong>6XX XXX XXX</strong></p>
+            <p class="text-orange-700 text-xs mt-1">Motif : <strong>STAGE + Votre NOM</strong></p>
+          </div>
+          <div x-show="form.paiement==='mtn'" class="mt-4 bg-yellow-50 border border-yellow-200 rounded-xl p-4">
+            <p class="text-yellow-800 text-sm font-semibold mb-1">Instructions MTN MoMo</p>
+            <p class="text-yellow-700 text-xs">Envoyez 50 000 FCFA au numéro <strong>6XX XXX XXX</strong></p>
+            <p class="text-yellow-700 text-xs mt-1">Motif : <strong>STAGE + Votre NOM</strong></p>
+          </div>
+        </div>
+
+        <!-- Summary -->
+        <div class="bg-slate-50 rounded-2xl p-5 border border-slate-200">
+          <h3 class="font-bold text-slate-700 text-sm mb-3 flex items-center gap-2"><i class="fas fa-receipt text-emerald-500"></i>Récapitulatif</h3>
+          <div class="space-y-2 text-sm">
+            <div class="flex justify-between"><span class="text-slate-500">Programme</span><span class="font-semibold text-slate-800">Session Juillet – Septembre 2025</span></div>
+            <div class="flex justify-between"><span class="text-slate-500">Pôle</span>
+              <span class="font-semibold capitalize"
+                x-text="form.pole === 'genie' ? 'Génie Logiciel' : form.pole === 'reseaux' ? 'Systèmes & Réseaux' : form.pole === 'software' ? 'Software Engineering' : '—'">
+              </span>
+            </div>
+            <div class="border-t border-slate-200 pt-2 flex justify-between"><span class="text-slate-700 font-semibold">Total à payer</span><span class="font-black text-emerald-600 text-lg">50 000 FCFA</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- NAV BUTTONS -->
+      <div class="flex items-center justify-between mt-8 pt-6 border-t border-slate-100">
+        <button x-show="step > 1" @click="prevStep()"
+                class="flex items-center gap-2 px-6 py-3 border border-slate-200 rounded-xl text-slate-600 hover:bg-slate-50 transition font-medium text-sm">
+          <i class="fas fa-arrow-left"></i> Retour
+        </button>
+        <div x-show="step === 1"></div>
+
+        <div x-show="step < 3">
+          <button @click="nextStep()"
+                  class="flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white px-8 py-3 rounded-xl font-bold text-sm transition shadow-lg shadow-emerald-500/30">
+            Suivant <i class="fas fa-arrow-right"></i>
+          </button>
+        </div>
+        <div x-show="step === 3">
+          <a href="dashboard-stagiaire.html"
+             class="flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white px-8 py-3 rounded-xl font-bold text-sm transition shadow-lg shadow-emerald-500/30">
+            <i class="fas fa-check"></i> Confirmer l'inscription
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

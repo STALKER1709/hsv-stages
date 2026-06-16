@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="fr" class="h-full">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tableau de bord — StagesPro Cameroun</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { inter: ['Inter', 'sans-serif'] },
+          colors: {
+            primary: { 50:'#eff6ff', 100:'#dbeafe', 500:'#3b82f6', 600:'#2563eb', 700:'#1d4ed8', 800:'#1e3a5f', 900:'#0f172a' },
+            emerald: { 400:'#34d399', 500:'#10b981', 600:'#059669' }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .sidebar-link { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 10px; color: #cbd5e1; font-size: 14px; font-weight: 500; transition: all 0.2s ease; text-decoration: none; }
+    .sidebar-link:hover { background: rgba(255,255,255,0.08); color: #fff; }
+    .sidebar-link.active { background: #2563eb; color: #fff; box-shadow: 0 4px 14px rgba(37,99,235,0.35); }
+    .sidebar-link i { width: 18px; text-align: center; font-size: 15px; }
+    .stat-card { background: #fff; border-radius: 16px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04); border: 1px solid #f1f5f9; transition: box-shadow 0.2s; }
+    .stat-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+    .progress-bar-bg { background: #f1f5f9; border-radius: 99px; height: 8px; overflow: hidden; }
+    .progress-bar-fill { height: 100%; border-radius: 99px; transition: width 0.6s ease; }
+    .section-card { background: #fff; border-radius: 16px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.04); border: 1px solid #f1f5f9; }
+    .badge { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 99px; font-size: 12px; font-weight: 600; }
+    .badge-blue { background: #dbeafe; color: #1d4ed8; }
+    .badge-purple { background: #ede9fe; color: #7c3aed; }
+    .badge-emerald { background: #d1fae5; color: #059669; }
+    .btn-view { display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; border-radius: 8px; font-size: 13px; font-weight: 500; background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; transition: all 0.15s; cursor: pointer; text-decoration: none; }
+    .btn-view:hover { background: #2563eb; color: #fff; border-color: #2563eb; }
+    .session-card { border-radius: 12px; padding: 16px; background: #f8fafc; border: 1px solid #e2e8f0; border-left-width: 4px; transition: background 0.15s; }
+    .session-card:hover { background: #f1f5f9; }
+    .timeline-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+    .avatar-fp { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #3b82f6, #1d4ed8); display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 700; font-size: 14px; flex-shrink: 0; }
+    .notif-btn { position: relative; width: 40px; height: 40px; border-radius: 10px; background: #f1f5f9; border: 1px solid #e2e8f0; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background 0.15s; color: #64748b; }
+    .notif-btn:hover { background: #e2e8f0; color: #1e293b; }
+    .notif-badge { position: absolute; top: -4px; right: -4px; width: 16px; height: 16px; border-radius: 50%; background: #ef4444; border: 2px solid #fff; display: flex; align-items: center; justify-content: center; font-size: 9px; color: #fff; font-weight: 700; }
+    table { width: 100%; border-collapse: collapse; }
+    thead th { text-align: left; padding: 10px 14px; font-size: 12px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid #f1f5f9; }
+    tbody tr { border-bottom: 1px solid #f8fafc; transition: background 0.1s; }
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: #f8fafc; }
+    tbody td { padding: 13px 14px; font-size: 14px; color: #334155; }
+    .icon-box { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    .animate-in { animation: fadeInUp 0.4s ease both; }
+    .animate-in-1 { animation-delay: 0.05s; }
+    .animate-in-2 { animation-delay: 0.1s; }
+    .animate-in-3 { animation-delay: 0.15s; }
+    .animate-in-4 { animation-delay: 0.2s; }
+    .animate-in-5 { animation-delay: 0.25s; }
+  </style>
+</head>
+<body class="bg-slate-50 h-full" x-data="{ mobileSidebarOpen: false }">
+
+  <!-- ═══════════════════════════════════════════════
+       SIDEBAR — Fixed left, full height, dark
+  ═══════════════════════════════════════════════ -->
+  <aside style="background:#0f172a;" class="fixed left-0 top-0 h-full w-64 flex flex-col z-40 overflow-y-auto scrollbar-hide">
+
+    <!-- Logo -->
+    <div class="px-5 py-6 border-b border-white/10">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center shadow-lg shadow-blue-600/30">
+          <i class="fa-solid fa-graduation-cap text-white text-lg"></i>
+        </div>
+        <div>
+          <div class="text-white font-bold text-lg leading-none tracking-tight">StagesPro</div>
+          <div class="text-slate-400 text-xs font-medium mt-0.5 uppercase tracking-widest">Cameroun</div>
+        </div>
+      </div>
+      <!-- Encadreur label -->
+      <div class="mt-4 flex items-center gap-2">
+        <div class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></div>
+        <span class="text-slate-400 text-xs font-semibold uppercase tracking-widest">Encadreur</span>
+      </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="flex-1 px-3 py-5 space-y-1">
+
+      <p class="text-slate-600 text-xs font-semibold uppercase tracking-widest px-3 mb-3">Principal</p>
+
+      <a href="dashboard-encadreur.html" class="sidebar-link active">
+        <i class="fa-solid fa-house"></i>
+        <span>Tableau de bord</span>
+      </a>
+
+      <a href="mes-stagiaires.html" class="sidebar-link">
+        <i class="fa-solid fa-users"></i>
+        <span>Mes Stagiaires</span>
+        <span class="ml-auto bg-blue-600/30 text-blue-300 text-xs px-2 py-0.5 rounded-full font-semibold">25</span>
+      </a>
+
+      <a href="gestion-cours.html" class="sidebar-link">
+        <i class="fa-solid fa-book-open"></i>
+        <span>Gestion des Cours</span>
+      </a>
+
+      <a href="presences.html" class="sidebar-link">
+        <i class="fa-solid fa-calendar-check"></i>
+        <span>Présences</span>
+        <span class="ml-auto bg-emerald-500/20 text-emerald-400 text-xs px-2 py-0.5 rounded-full font-semibold">7</span>
+      </a>
+
+      <div class="border-t border-white/10 my-4"></div>
+      <p class="text-slate-600 text-xs font-semibold uppercase tracking-widest px-3 mb-3">Compte</p>
+
+      <a href="#" class="sidebar-link">
+        <i class="fa-solid fa-user"></i>
+        <span>Mon Profil</span>
+      </a>
+
+      <a href="#" class="sidebar-link" style="color:#f87171;">
+        <i class="fa-solid fa-right-from-bracket" style="color:#f87171;"></i>
+        <span>Déconnexion</span>
+      </a>
+    </nav>
+
+    <!-- Version + mini profile -->
+    <div class="px-5 py-4 border-t border-white/10">
+      <div class="flex items-center justify-between mb-3">
+        <span class="text-slate-600 text-xs">StagesPro Cameroun</span>
+        <span class="text-slate-600 text-xs font-mono">v2.1.0</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <div class="avatar-fp w-7 h-7 text-xs">FP</div>
+        <div>
+          <p class="text-slate-300 text-xs font-semibold leading-none">Fofack Paul</p>
+          <p class="text-slate-500 text-xs mt-0.5">Encadreur principal</p>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ═══════════════════════════════════════════════
+       MAIN CONTENT
+  ═══════════════════════════════════════════════ -->
+  <main class="ml-64 min-h-screen pb-20 md:pb-8">
+
+    <!-- TOP BAR -->
+    <header class="sticky top-0 z-30 bg-slate-50/90 backdrop-blur-md border-b border-slate-200 px-8 py-4">
+      <div class="flex items-center justify-between">
+        <div>
+          <nav class="flex items-center gap-2 text-xs text-slate-400 mb-1">
+            <i class="fa-solid fa-house text-slate-400"></i>
+            <span>/</span>
+            <span class="text-blue-600 font-medium">Tableau de bord</span>
+          </nav>
+          <h1 class="text-2xl font-bold text-slate-900 leading-tight">Tableau de bord</h1>
+        </div>
+
+        <div class="flex items-center gap-4">
+          <div class="hidden lg:flex items-center gap-2 text-sm text-slate-500 bg-white border border-slate-200 rounded-lg px-3 py-2">
+            <i class="fa-regular fa-calendar text-slate-400"></i>
+            <span>Lundi, 16 Juin 2026</span>
+          </div>
+
+          <button class="notif-btn">
+            <i class="fa-regular fa-bell text-base"></i>
+            <span class="notif-badge">4</span>
+          </button>
+
+          <div class="flex items-center gap-3 bg-white border border-slate-200 rounded-xl px-3 py-2 cursor-pointer hover:border-blue-300 transition-colors">
+            <div class="avatar-fp">FP</div>
+            <div class="hidden md:block">
+              <p class="text-sm font-semibold text-slate-800 leading-none">Fofack Paul</p>
+              <p class="text-xs text-slate-500 mt-0.5">Encadreur</p>
+            </div>
+            <i class="fa-solid fa-chevron-down text-slate-400 text-xs ml-1"></i>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- PAGE BODY -->
+    <div class="px-8 py-6">
+
+      <!-- Welcome Banner -->
+      <div class="rounded-2xl p-6 mb-8 animate-in" style="background: linear-gradient(135deg, #1e3a5f 0%, #2563eb 60%, #3b82f6 100%);">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-blue-200 text-sm font-medium mb-1">Bienvenue de retour 👋</p>
+            <h2 class="text-white text-2xl font-bold">Bonjour, Fofack Paul !</h2>
+            <p class="text-blue-200 text-sm mt-2">Vous avez <span class="text-white font-semibold">7 évaluations</span> en attente de correction et <span class="text-white font-semibold">3 sessions</span> cette semaine.</p>
+          </div>
+          <div class="hidden md:flex items-center gap-6">
+            <div class="text-center">
+              <div class="text-white text-3xl font-black">25</div>
+              <div class="text-blue-200 text-xs font-medium">Stagiaires</div>
+            </div>
+            <div class="w-px h-12 bg-white/20"></div>
+            <div class="text-center">
+              <div class="text-white text-3xl font-black">3</div>
+              <div class="text-blue-200 text-xs font-medium">Pôles actifs</div>
+            </div>
+            <div class="w-px h-12 bg-white/20"></div>
+            <div class="text-center">
+              <div class="text-white text-3xl font-black">89%</div>
+              <div class="text-blue-200 text-xs font-medium">Présence</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STAT CARDS: 4 columns -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
+
+        <!-- Card 1 -->
+        <div class="stat-card animate-in animate-in-1">
+          <div class="flex items-start justify-between mb-4">
+            <div class="icon-box" style="background:#eff6ff;">
+              <i class="fa-solid fa-users" style="color:#2563eb;"></i>
+            </div>
+            <span class="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">+3 ce mois</span>
+          </div>
+          <div class="text-3xl font-black text-slate-900 mb-1">25</div>
+          <div class="text-sm font-medium text-slate-500">Stagiaires actifs</div>
+          <div class="mt-3 pt-3 border-t border-slate-100 flex items-center gap-1 text-xs text-slate-400">
+            <i class="fa-solid fa-arrow-trend-up text-emerald-500"></i>
+            <span class="text-emerald-600 font-semibold">+13.6%</span>
+            <span>vs mois précédent</span>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="stat-card animate-in animate-in-2">
+          <div class="flex items-start justify-between mb-4">
+            <div class="icon-box" style="background:#d1fae5;">
+              <i class="fa-solid fa-calendar-check" style="color:#059669;"></i>
+            </div>
+            <span class="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-1 rounded-full">↑ 2%</span>
+          </div>
+          <div class="text-3xl font-black text-slate-900 mb-1">89%</div>
+          <div class="text-sm font-medium text-slate-500">Présence moyenne</div>
+          <div class="mt-3 pt-3 border-t border-slate-100 flex items-center gap-1 text-xs text-slate-400">
+            <i class="fa-solid fa-arrow-trend-up text-emerald-500"></i>
+            <span class="text-emerald-600 font-semibold">↑ 2%</span>
+            <span>vs semaine dernière</span>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="stat-card animate-in animate-in-3">
+          <div class="flex items-start justify-between mb-4">
+            <div class="icon-box" style="background:#ede9fe;">
+              <i class="fa-solid fa-book-open" style="color:#7c3aed;"></i>
+            </div>
+            <span class="text-xs font-semibold text-violet-600 bg-violet-50 px-2 py-1 rounded-full">12 modules</span>
+          </div>
+          <div class="text-3xl font-black text-slate-900 mb-1">3</div>
+          <div class="text-sm font-medium text-slate-500">Cours actifs</div>
+          <div class="mt-3 pt-3 border-t border-slate-100 flex items-center gap-1 text-xs text-slate-400">
+            <i class="fa-solid fa-layer-group text-violet-400"></i>
+            <span>12 modules au total</span>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="stat-card animate-in animate-in-4">
+          <div class="flex items-start justify-between mb-4">
+            <div class="icon-box" style="background:#fff7ed;">
+              <i class="fa-solid fa-pen-to-square" style="color:#d97706;"></i>
+            </div>
+            <span class="text-xs font-semibold text-amber-600 bg-amber-50 px-2 py-1 rounded-full">7 en attente</span>
+          </div>
+          <div class="text-3xl font-black text-slate-900 mb-1">18</div>
+          <div class="text-sm font-medium text-slate-500">Évaluations corrigées</div>
+          <div class="mt-3 pt-3 border-t border-slate-100 flex items-center gap-1 text-xs">
+            <i class="fa-solid fa-clock text-amber-400"></i>
+            <span class="text-amber-600 font-semibold">7 en attente</span>
+            <span class="text-slate-400">de correction</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- MAIN 2-COL LAYOUT -->
+      <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
+
+        <!-- LEFT COLUMN (col-span-2) -->
+        <div class="xl:col-span-2 space-y-6">
+
+          <!-- Stagiaires Table -->
+          <div class="section-card animate-in animate-in-5">
+            <div class="flex items-center justify-between mb-5">
+              <div>
+                <h2 class="text-lg font-bold text-slate-900">Mes Stagiaires</h2>
+                <p class="text-sm text-slate-500 mt-0.5">Suivi de progression en temps réel</p>
+              </div>
+              <a href="mes-stagiaires.html" class="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 font-semibold hover:underline transition-colors">
+                Voir tout
+                <i class="fa-solid fa-arrow-right text-xs"></i>
+              </a>
+            </div>
+
+            <!-- Search bar -->
+            <div class="flex items-center gap-3 mb-4">
+              <div class="relative flex-1">
+                <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                <input type="text" placeholder="Rechercher un stagiaire…" class="w-full pl-9 pr-4 py-2 text-sm border border-slate-200 rounded-lg bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-400 transition-all">
+              </div>
+              <button class="flex items-center gap-2 px-3 py-2 text-sm text-slate-600 border border-slate-200 rounded-lg bg-slate-50 hover:bg-slate-100 transition-colors font-medium">
+                <i class="fa-solid fa-filter text-slate-400"></i>
+                Filtrer
+              </button>
+            </div>
+
+            <div class="overflow-x-auto -mx-2">
+              <table class="min-w-full">
+                <thead>
+                  <tr>
+                    <th>Stagiaire</th>
+                    <th>Pôle</th>
+                    <th>Progression</th>
+                    <th>Dernière activité</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <!-- Kouam Eric -->
+                  <tr>
+                    <td>
+                      <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0" style="background:linear-gradient(135deg,#3b82f6,#1d4ed8);">KE</div>
+                        <div>
+                          <div class="font-semibold text-slate-800 text-sm">Kouam Eric</div>
+                          <div class="text-xs text-slate-400">IAI Cameroun</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td><span class="badge badge-blue">Génie Logiciel</span></td>
+                    <td>
+                      <div class="flex items-center gap-3 min-w-[120px]">
+                        <div class="progress-bar-bg flex-1">
+                          <div class="progress-bar-fill" style="width:67%;background:#3b82f6;"></div>
+                        </div>
+                        <span class="text-sm font-semibold text-slate-700 w-9 text-right">67%</span>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="flex items-center gap-1.5 text-sm text-slate-500">
+                        <i class="fa-regular fa-clock text-slate-400"></i>
+                        Il y a 2h
+                      </div>
+                    </td>
+                    <td><a href="#" class="btn-view"><i class="fa-regular fa-eye text-xs"></i>Voir</a></td>
+                  </tr>
+
+                  <!-- Ngono Marie -->
+                  <tr>
+                    <td>
+                      <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0" style="background:linear-gradient(135deg,#8b5cf6,#7c3aed);">NM</div>
+                        <div>
+                          <div class="font-semibold text-slate-800 text-sm">Ngono Marie</div>
+                          <div class="text-xs text-slate-400">ISSAM</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td><span class="badge badge-purple">Software Engineering</span></td>
+                    <td>
+                      <div class="flex items-center gap-3 min-w-[120px]">
+                        <div class="progress-bar-bg flex-1">
+                          <div class="progress-bar-fill" style="width:82%;background:#7c3aed;"></div>
+                        </div>
+                        <span class="text-sm font-semibold text-slate-700 w-9 text-right">82%</span>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="flex items-center gap-1.5 text-sm">
+                        <i class="fa-regular fa-clock text-emerald-400"></i>
+                        <span class="text-emerald-600 font-medium">Il y a 30min</span>
+                      </div>
+                    </td>
+                    <td><a href="#" class="btn-view"><i class="fa-regular fa-eye text-xs"></i>Voir</a></td>
+                  </tr>
+
+                  <!-- Tchamba Lea -->
+                  <tr>
+                    <td>
+                      <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0" style="background:linear-gradient(135deg,#10b981,#059669);">TL</div>
+                        <div>
+                          <div class="font-semibold text-slate-800 text-sm">Tchamba Lea</div>
+                          <div class="text-xs text-slate-400">Université SIANTOU</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td><span class="badge badge-emerald">Systèmes & Réseaux</span></td>
+                    <td>
+                      <div class="flex items-center gap-3 min-w-[120px]">
+                        <div class="progress-bar-bg flex-1">
+                          <div class="progress-bar-fill" style="width:45%;background:#10b981;"></div>
+                        </div>
+                        <span class="text-sm font-semibold text-slate-700 w-9 text-right">45%</span>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="flex items-center gap-1.5 text-sm text-slate-500">
+                        <i class="fa-regular fa-clock text-slate-400"></i>
+                        Il y a 1j
+                      </div>
+                    </td>
+                    <td><a href="#" class="btn-view"><i class="fa-regular fa-eye text-xs"></i>Voir</a></td>
+                  </tr>
+
+                  <!-- Bello Samuel -->
+                  <tr>
+                    <td>
+                      <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0" style="background:linear-gradient(135deg,#60a5fa,#3b82f6);">BS</div>
+                        <div>
+                          <div class="font-semibold text-slate-800 text-sm">Bello Samuel</div>
+                          <div class="text-xs text-slate-400">ISESTMA</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td><span class="badge badge-blue">Génie Logiciel</span></td>
+                    <td>
+                      <div class="flex items-center gap-3 min-w-[120px]">
+                        <div class="progress-bar-bg flex-1">
+                          <div class="progress-bar-fill" style="width:71%;background:#3b82f6;"></div>
+                        </div>
+                        <span class="text-sm font-semibold text-slate-700 w-9 text-right">71%</span>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="flex items-center gap-1.5 text-sm text-slate-500">
+                        <i class="fa-regular fa-clock text-slate-400"></i>
+                        Il y a 3h
+                      </div>
+                    </td>
+                    <td><a href="#" class="btn-view"><i class="fa-regular fa-eye text-xs"></i>Voir</a></td>
+                  </tr>
+
+                  <!-- Kameni Rose -->
+                  <tr>
+                    <td>
+                      <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0" style="background:linear-gradient(135deg,#a78bfa,#8b5cf6);">KR</div>
+                        <div>
+                          <div class="font-semibold text-slate-800 text-sm">Kameni Rose</div>
+                          <div class="text-xs text-slate-400">IAI Cameroun</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td><span class="badge badge-purple">Software Engineering</span></td>
+                    <td>
+                      <div class="flex items-center gap-3 min-w-[120px]">
+                        <div class="progress-bar-bg flex-1">
+                          <div class="progress-bar-fill" style="width:88%;background:#7c3aed;"></div>
+                        </div>
+                        <span class="text-sm font-semibold text-slate-700 w-9 text-right">88%</span>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="flex items-center gap-1.5 text-sm">
+                        <i class="fa-solid fa-circle text-emerald-500 text-xs"></i>
+                        <span class="text-emerald-600 font-medium">Aujourd'hui</span>
+                      </div>
+                    </td>
+                    <td><a href="#" class="btn-view"><i class="fa-regular fa-eye text-xs"></i>Voir</a></td>
+                  </tr>
+
+                  <!-- Mbarga Didier -->
+                  <tr>
+                    <td>
+                      <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0" style="background:linear-gradient(135deg,#34d399,#10b981);">MD</div>
+                        <div>
+                          <div class="font-semibold text-slate-800 text-sm">Mbarga Didier</div>
+                          <div class="text-xs text-slate-400">ISSAM</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td><span class="badge badge-emerald">Systèmes & Réseaux</span></td>
+                    <td>
+                      <div class="flex items-center gap-3 min-w-[120px]">
+                        <div class="progress-bar-bg flex-1">
+                          <div class="progress-bar-fill" style="width:55%;background:#10b981;"></div>
+                        </div>
+                        <span class="text-sm font-semibold text-slate-700 w-9 text-right">55%</span>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="flex items-center gap-1.5 text-sm text-slate-500">
+                        <i class="fa-regular fa-clock text-slate-400"></i>
+                        Il y a 2j
+                      </div>
+                    </td>
+                    <td><a href="#" class="btn-view"><i class="fa-regular fa-eye text-xs"></i>Voir</a></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Pagination footer -->
+            <div class="mt-4 pt-4 border-t border-slate-100 flex items-center justify-between">
+              <p class="text-sm text-slate-500">Affichage de <span class="font-semibold text-slate-700">6</span> sur <span class="font-semibold text-slate-700">25</span> stagiaires</p>
+              <div class="flex items-center gap-2">
+                <button class="px-3 py-1.5 text-sm border border-slate-200 rounded-lg text-slate-400" disabled>
+                  <i class="fa-solid fa-chevron-left text-xs"></i>
+                </button>
+                <button class="px-3 py-1.5 text-sm bg-blue-600 text-white rounded-lg font-semibold">1</button>
+                <button class="px-3 py-1.5 text-sm border border-slate-200 rounded-lg text-slate-500 hover:bg-slate-50">2</button>
+                <button class="px-3 py-1.5 text-sm border border-slate-200 rounded-lg text-slate-500 hover:bg-slate-50">3</button>
+                <button class="px-3 py-1.5 text-sm border border-slate-200 rounded-lg text-slate-500 hover:bg-slate-50">
+                  <i class="fa-solid fa-chevron-right text-xs"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sessions à venir -->
+          <div class="section-card">
+            <div class="flex items-center justify-between mb-5">
+              <div>
+                <h2 class="text-lg font-bold text-slate-900">Sessions à venir cette semaine</h2>
+                <p class="text-sm text-slate-500 mt-0.5">Semaine du 16 au 21 Juin 2026</p>
+              </div>
+              <button class="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-blue-600 border border-blue-200 bg-blue-50 rounded-lg hover:bg-blue-600 hover:text-white hover:border-blue-600 transition-all">
+                <i class="fa-solid fa-plus text-xs"></i>
+                Nouvelle session
+              </button>
+            </div>
+
+            <div class="space-y-4">
+
+              <!-- Session 1 -->
+              <div class="session-card" style="border-left-color:#2563eb;">
+                <div class="flex items-start gap-4">
+                  <div class="flex-shrink-0 text-center bg-blue-50 rounded-xl p-3 min-w-[68px]">
+                    <div class="text-blue-600 text-xs font-bold uppercase">Lun</div>
+                    <div class="text-blue-800 text-2xl font-black leading-tight">17</div>
+                    <div class="text-blue-500 text-xs">Juin</div>
+                  </div>
+                  <div class="flex-1">
+                    <div class="flex items-start justify-between gap-2">
+                      <div>
+                        <h3 class="font-bold text-slate-800 text-sm">Introduction à Laravel</h3>
+                        <p class="text-xs text-slate-500 mt-0.5">Cours magistral — Génie Logiciel</p>
+                      </div>
+                      <span class="badge badge-blue whitespace-nowrap">Génie Logiciel</span>
+                    </div>
+                    <div class="flex items-center gap-4 mt-3 flex-wrap">
+                      <div class="flex items-center gap-1.5 text-xs text-slate-500">
+                        <i class="fa-regular fa-clock text-blue-400"></i>
+                        <span class="font-medium">09:00 – 12:00</span>
+                      </div>
+                      <div class="flex items-center gap-1.5 text-xs text-slate-500">
+                        <i class="fa-solid fa-users text-blue-400"></i>
+                        <span>25 participants</span>
+                      </div>
+                      <div class="flex items-center gap-1.5 text-xs text-slate-500">
+                        <i class="fa-solid fa-location-dot text-blue-400"></i>
+                        <span>Salle B204</span>
+                      </div>
+                    </div>
+                  </div>
+                  <button class="flex-shrink-0 px-3 py-1.5 rounded-lg bg-blue-50 text-blue-600 text-xs font-semibold hover:bg-blue-600 hover:text-white transition-all border border-blue-100">
+                    Détails
+                  </button>
+                </div>
+              </div>
+
+              <!-- Session 2 -->
+              <div class="session-card" style="border-left-color:#059669;">
+                <div class="flex items-start gap-4">
+                  <div class="flex-shrink-0 text-center bg-emerald-50 rounded-xl p-3 min-w-[68px]">
+                    <div class="text-emerald-600 text-xs font-bold uppercase">Mer</div>
+                    <div class="text-emerald-800 text-2xl font-black leading-tight">19</div>
+                    <div class="text-emerald-500 text-xs">Juin</div>
+                  </div>
+                  <div class="flex-1">
+                    <div class="flex items-start justify-between gap-2">
+                      <div>
+                        <h3 class="font-bold text-slate-800 text-sm">TP Réseaux CISCO</h3>
+                        <p class="text-xs text-slate-500 mt-0.5">Travaux pratiques — Systèmes & Réseaux</p>
+                      </div>
+                      <span class="badge badge-emerald whitespace-nowrap">Sys & Réseaux</span>
+                    </div>
+                    <div class="flex items-center gap-4 mt-3 flex-wrap">
+                      <div class="flex items-center gap-1.5 text-xs text-slate-500">
+                        <i class="fa-regular fa-clock text-emerald-400"></i>
+                        <span class="font-medium">14:00 – 17:00</span>
+                      </div>
+                      <div class="flex items-center gap-1.5 text-xs text-slate-500">
+                        <i class="fa-solid fa-users text-emerald-400"></i>
+                        <span>18 participants</span>
+                      </div>
+                      <div class="flex items-center gap-1.5 text-xs text-slate-500">
+                        <i class="fa-solid fa-location-dot text-emerald-400"></i>
+                        <span>Labo Réseau</span>
+                      </div>
+                    </div>
+                  </div>
+                  <button class="flex-shrink-0 px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-600 text-xs font-semibold hover:bg-emerald-600 hover:text-white transition-all border border-emerald-100">
+                    Détails
+                  </button>
+                </div>
+              </div>
+
+              <!-- Session 3 -->
+              <div class="session-card" style="border-left-color:#d97706;">
+                <div class="flex items-start gap-4">
+                  <div class="flex-shrink-0 text-center bg-amber-50 rounded-xl p-3 min-w-[68px]">
+                    <div class="text-amber-600 text-xs font-bold uppercase">Ven</div>
+                    <div class="text-amber-800 text-2xl font-black leading-tight">21</div>
+                    <div class="text-amber-500 text-xs">Juin</div>
+                  </div>
+                  <div class="flex-1">
+                    <div class="flex items-start justify-between gap-2">
+                      <div>
+                        <h3 class="font-bold text-slate-800 text-sm">Examen Module 5</h3>
+                        <p class="text-xs text-slate-500 mt-0.5">Évaluation finale — Tous pôles</p>
+                      </div>
+                      <span class="badge" style="background:#fff7ed;color:#b45309;">Examen</span>
+                    </div>
+                    <div class="flex items-center gap-4 mt-3 flex-wrap">
+                      <div class="flex items-center gap-1.5 text-xs text-slate-500">
+                        <i class="fa-regular fa-clock text-amber-400"></i>
+                        <span class="font-medium">10:00 – 12:00</span>
+                      </div>
+                      <div class="flex items-center gap-1.5 text-xs text-slate-500">
+                        <i class="fa-solid fa-users text-amber-400"></i>
+                        <span>25 participants</span>
+                      </div>
+                      <div class="flex items-center gap-1.5 text-xs text-slate-500">
+                        <i class="fa-solid fa-location-dot text-amber-400"></i>
+                        <span>Amphi A</span>
+                      </div>
+                    </div>
+                  </div>
+                  <button class="flex-shrink-0 px-3 py-1.5 rounded-lg bg-amber-50 text-amber-600 text-xs font-semibold hover:bg-amber-600 hover:text-white transition-all border border-amber-100">
+                    Détails
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- END LEFT COL -->
+
+        <!-- RIGHT COLUMN -->
+        <div class="xl:col-span-1 space-y-6">
+
+          <!-- Statistiques rapides -->
+          <div class="section-card">
+            <div class="flex items-center justify-between mb-5">
+              <div>
+                <h2 class="text-base font-bold text-slate-900">Statistiques rapides</h2>
+                <p class="text-xs text-slate-500 mt-0.5">Progression par Pôle</p>
+              </div>
+              <button class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 flex items-center justify-center transition-colors">
+                <i class="fa-solid fa-ellipsis text-slate-500 text-sm"></i>
+              </button>
+            </div>
+
+            <!-- Donut chart visual -->
+            <div class="flex items-center justify-center mb-6">
+              <div class="relative w-32 h-32">
+                <svg viewBox="0 0 120 120" class="w-full h-full -rotate-90">
+                  <circle cx="60" cy="60" r="50" fill="none" stroke="#f1f5f9" stroke-width="12"/>
+                  <circle cx="60" cy="60" r="50" fill="none" stroke="#3b82f6" stroke-width="12"
+                    stroke-dasharray="232.7" stroke-dashoffset="60.5" stroke-linecap="round" opacity="0.9"/>
+                </svg>
+                <div class="absolute inset-0 flex flex-col items-center justify-center">
+                  <span class="text-2xl font-black text-slate-900">72%</span>
+                  <span class="text-xs text-slate-500 font-medium">Moy. globale</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Horizontal bars -->
+            <div class="space-y-4">
+              <!-- Génie Logiciel -->
+              <div>
+                <div class="flex items-center justify-between mb-1.5">
+                  <div class="flex items-center gap-2">
+                    <div class="w-3 h-3 rounded-sm" style="background:#3b82f6;"></div>
+                    <span class="text-sm font-medium text-slate-700">Génie Logiciel</span>
+                  </div>
+                  <span class="text-sm font-bold text-slate-900">74%</span>
+                </div>
+                <div class="progress-bar-bg">
+                  <div class="progress-bar-fill" style="width:74%;background:linear-gradient(90deg,#3b82f6,#60a5fa);"></div>
+                </div>
+                <div class="flex justify-between mt-1">
+                  <span class="text-xs text-slate-400">12 stagiaires</span>
+                  <span class="text-xs text-emerald-500 font-medium">↑ 3%</span>
+                </div>
+              </div>
+
+              <!-- Software Engineering -->
+              <div>
+                <div class="flex items-center justify-between mb-1.5">
+                  <div class="flex items-center gap-2">
+                    <div class="w-3 h-3 rounded-sm" style="background:#7c3aed;"></div>
+                    <span class="text-sm font-medium text-slate-700">Software Eng.</span>
+                  </div>
+                  <span class="text-sm font-bold text-slate-900">81%</span>
+                </div>
+                <div class="progress-bar-bg">
+                  <div class="progress-bar-fill" style="width:81%;background:linear-gradient(90deg,#7c3aed,#a78bfa);"></div>
+                </div>
+                <div class="flex justify-between mt-1">
+                  <span class="text-xs text-slate-400">8 stagiaires</span>
+                  <span class="text-xs text-emerald-500 font-medium">↑ 5%</span>
+                </div>
+              </div>
+
+              <!-- Systèmes & Réseaux -->
+              <div>
+                <div class="flex items-center justify-between mb-1.5">
+                  <div class="flex items-center gap-2">
+                    <div class="w-3 h-3 rounded-sm" style="background:#10b981;"></div>
+                    <span class="text-sm font-medium text-slate-700">Sys & Réseaux</span>
+                  </div>
+                  <span class="text-sm font-bold text-slate-900">62%</span>
+                </div>
+                <div class="progress-bar-bg">
+                  <div class="progress-bar-fill" style="width:62%;background:linear-gradient(90deg,#10b981,#34d399);"></div>
+                </div>
+                <div class="flex justify-between mt-1">
+                  <span class="text-xs text-slate-400">5 stagiaires</span>
+                  <span class="text-xs text-amber-500 font-medium">↓ 1%</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-5 pt-4 border-t border-slate-100">
+              <a href="#" class="flex items-center justify-center gap-2 w-full py-2.5 text-sm font-semibold text-blue-600 bg-blue-50 rounded-xl hover:bg-blue-600 hover:text-white transition-all border border-blue-100">
+                <i class="fa-solid fa-chart-bar text-sm"></i>
+                Rapport complet
+              </a>
+            </div>
+          </div>
+
+          <!-- Activité récente -->
+          <div class="section-card">
+            <div class="flex items-center justify-between mb-5">
+              <div>
+                <h2 class="text-base font-bold text-slate-900">Activité récente</h2>
+                <p class="text-xs text-slate-500 mt-0.5">Dernières actions des stagiaires</p>
+              </div>
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse block"></span>
+            </div>
+
+            <div class="space-y-4">
+
+              <!-- Activity 1 -->
+              <div class="flex gap-3">
+                <div class="flex flex-col items-center gap-1">
+                  <div class="timeline-dot" style="background:#7c3aed;"></div>
+                  <div class="w-px flex-1 bg-slate-100 min-h-[20px]"></div>
+                </div>
+                <div class="flex-1 pb-1">
+                  <p class="text-sm text-slate-800 font-medium leading-snug">
+                    <span class="font-bold text-violet-700">Ngono Marie</span> a soumis l'évaluation Module 4
+                  </p>
+                  <div class="flex items-center gap-2 mt-1">
+                    <span class="text-xs text-slate-400">Il y a 2 min</span>
+                    <span class="badge badge-purple" style="font-size:10px;padding:2px 7px;">Évaluation</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Activity 2 -->
+              <div class="flex gap-3">
+                <div class="flex flex-col items-center gap-1">
+                  <div class="timeline-dot" style="background:#3b82f6;"></div>
+                  <div class="w-px flex-1 bg-slate-100 min-h-[20px]"></div>
+                </div>
+                <div class="flex-1 pb-1">
+                  <p class="text-sm text-slate-800 font-medium leading-snug">
+                    <span class="font-bold text-blue-700">Kouam Eric</span> a complété le cours Laravel
+                  </p>
+                  <div class="flex items-center gap-2 mt-1">
+                    <span class="text-xs text-slate-400">Il y a 1h</span>
+                    <span class="badge badge-blue" style="font-size:10px;padding:2px 7px;">Cours</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Activity 3 -->
+              <div class="flex gap-3">
+                <div class="flex flex-col items-center gap-1">
+                  <div class="timeline-dot" style="background:#10b981;"></div>
+                  <div class="w-px flex-1 bg-slate-100 min-h-[20px]"></div>
+                </div>
+                <div class="flex-1 pb-1">
+                  <p class="text-sm text-slate-800 font-medium leading-snug">
+                    <span class="font-bold text-emerald-700">Tchamba Lea</span> s'est connectée à la plateforme
+                  </p>
+                  <div class="flex items-center gap-2 mt-1">
+                    <span class="text-xs text-slate-400">Il y a 3h</span>
+                    <span class="badge badge-emerald" style="font-size:10px;padding:2px 7px;">Connexion</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Activity 4 -->
+              <div class="flex gap-3">
+                <div class="flex flex-col items-center gap-1">
+                  <div class="timeline-dot" style="background:#3b82f6;"></div>
+                  <div class="w-px flex-1 bg-slate-100 min-h-[20px]"></div>
+                </div>
+                <div class="flex-1 pb-1">
+                  <p class="text-sm text-slate-800 font-medium leading-snug">
+                    <span class="font-bold text-blue-700">Bello Samuel</span> a démarré le Module 3
+                  </p>
+                  <div class="flex items-center gap-2 mt-1">
+                    <span class="text-xs text-slate-400">Il y a 5h</span>
+                    <span class="badge badge-blue" style="font-size:10px;padding:2px 7px;">Module</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Activity 5 -->
+              <div class="flex gap-3">
+                <div class="flex flex-col items-center gap-1">
+                  <div class="timeline-dot" style="background:#f59e0b;"></div>
+                </div>
+                <div class="flex-1">
+                  <p class="text-sm text-slate-800 font-medium leading-snug">
+                    <span class="font-bold" style="color:#b45309;">Kameni Rose</span> a obtenu <span class="text-emerald-600 font-black">95%</span> à l'évaluation
+                  </p>
+                  <div class="flex items-center gap-2 mt-1">
+                    <span class="text-xs text-slate-400">Hier</span>
+                    <span class="badge" style="background:#fff7ed;color:#b45309;font-size:10px;padding:2px 7px;">Résultat</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="mt-5 pt-4 border-t border-slate-100">
+              <a href="#" class="text-sm text-blue-600 font-semibold hover:underline flex items-center gap-1.5">
+                Voir toute l'activité
+                <i class="fa-solid fa-arrow-right text-xs"></i>
+              </a>
+            </div>
+          </div>
+
+          <!-- Quick Actions -->
+          <div class="section-card">
+            <h2 class="text-base font-bold text-slate-900 mb-4">Actions rapides</h2>
+            <div class="grid grid-cols-2 gap-3">
+              <button class="flex flex-col items-center gap-2 p-3 rounded-xl bg-blue-50 border border-blue-100 hover:bg-blue-100 transition-all group">
+                <div class="w-9 h-9 rounded-lg bg-blue-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <i class="fa-solid fa-plus text-white text-sm"></i>
+                </div>
+                <span class="text-xs font-semibold text-blue-700 text-center leading-tight">Nouveau cours</span>
+              </button>
+              <button class="flex flex-col items-center gap-2 p-3 rounded-xl bg-violet-50 border border-violet-100 hover:bg-violet-100 transition-all group">
+                <div class="w-9 h-9 rounded-lg bg-violet-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <i class="fa-solid fa-pen-to-square text-white text-sm"></i>
+                </div>
+                <span class="text-xs font-semibold text-violet-700 text-center leading-tight">Corriger éval.</span>
+              </button>
+              <button class="flex flex-col items-center gap-2 p-3 rounded-xl bg-emerald-50 border border-emerald-100 hover:bg-emerald-100 transition-all group">
+                <div class="w-9 h-9 rounded-lg bg-emerald-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <i class="fa-solid fa-calendar-plus text-white text-sm"></i>
+                </div>
+                <span class="text-xs font-semibold text-emerald-700 text-center leading-tight">Planifier session</span>
+              </button>
+              <button class="flex flex-col items-center gap-2 p-3 rounded-xl bg-amber-50 border border-amber-100 hover:bg-amber-100 transition-all group">
+                <div class="w-9 h-9 rounded-lg bg-amber-500 flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <i class="fa-solid fa-file-export text-white text-sm"></i>
+                </div>
+                <span class="text-xs font-semibold text-amber-700 text-center leading-tight">Exporter rapport</span>
+              </button>
+            </div>
+          </div>
+
+        </div>
+        <!-- END RIGHT COL -->
+      </div>
+      <!-- END 2-COL LAYOUT -->
+
+    </div>
+    <!-- END PAGE BODY -->
+  </main>
+
+  <!-- ═══════════════════════════════════════════════
+       MOBILE BOTTOM NAV
+  ═══════════════════════════════════════════════ -->
+  <nav class="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-slate-200 flex items-center justify-around px-4 py-2 md:hidden shadow-xl">
+    <a href="dashboard-encadreur.html" class="flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl" style="color:#2563eb;background:#eff6ff;">
+      <i class="fa-solid fa-house text-lg"></i>
+      <span class="text-xs font-semibold">Accueil</span>
+    </a>
+    <a href="mes-stagiaires.html" class="flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl text-slate-500 hover:text-blue-600 transition-colors">
+      <i class="fa-solid fa-users text-lg"></i>
+      <span class="text-xs font-medium">Stagiaires</span>
+    </a>
+    <a href="gestion-cours.html" class="flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl text-slate-500 hover:text-blue-600 transition-colors">
+      <i class="fa-solid fa-book-open text-lg"></i>
+      <span class="text-xs font-medium">Cours</span>
+    </a>
+    <a href="presences.html" class="flex flex-col items-center gap-1 px-3 py-1.5 rounded-xl text-slate-500 hover:text-blue-600 transition-colors">
+      <i class="fa-solid fa-calendar-check text-lg"></i>
+      <span class="text-xs font-medium">Présences</span>
+    </a>
+  </nav>
+
+</body>
+</html>

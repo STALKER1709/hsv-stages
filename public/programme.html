@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Programme – StagesPro Cameroun</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { inter: ['Inter', 'sans-serif'] },
+          colors: {
+            primary: { 50:'#eff6ff', 100:'#dbeafe', 500:'#3b82f6', 600:'#2563eb', 700:'#1d4ed8', 800:'#1e3a5f', 900:'#0f172a' },
+            emerald: { 400:'#34d399', 500:'#10b981', 600:'#059669' }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .card-hover { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+    .card-hover:hover { transform: translateY(-4px); box-shadow: 0 16px 36px rgba(30,58,95,0.14); }
+  </style>
+</head>
+<body class="bg-[#f8fafc] text-gray-800">
+
+  <!-- NAVBAR -->
+  <nav class="bg-[#1e3a5f] sticky top-0 z-50 shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16">
+        <a href="index.html" class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-lg bg-emerald-500 flex items-center justify-center">
+            <i class="fa-solid fa-laptop-code text-white"></i>
+          </div>
+          <span class="text-xl font-bold text-white">Stages<span class="text-emerald-400">Pro</span></span>
+        </a>
+        <div class="hidden md:flex items-center gap-6">
+          <a href="index.html" class="text-white/80 hover:text-white font-medium transition-colors">Accueil</a>
+          <a href="programme.html" class="text-emerald-400 font-semibold border-b-2 border-emerald-400 pb-0.5">Programme</a>
+          <a href="inscription.html" class="text-white/80 hover:text-white font-medium transition-colors">Inscription</a>
+          <a href="login.html" class="text-white/80 hover:text-white font-medium transition-colors">Connexion</a>
+          <a href="inscription.html" class="bg-emerald-500 hover:bg-emerald-600 text-white font-semibold px-5 py-2 rounded-lg transition-colors">S'inscrire</a>
+        </div>
+        <button class="md:hidden text-white text-xl p-2" onclick="document.getElementById('mobileNav').classList.toggle('hidden')">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+      </div>
+      <div id="mobileNav" class="hidden md:hidden pb-4">
+        <div class="flex flex-col gap-3 pt-3 border-t border-white/10">
+          <a href="index.html" class="text-white/80 hover:text-white py-2">Accueil</a>
+          <a href="programme.html" class="text-emerald-400 font-semibold py-2">Programme</a>
+          <a href="inscription.html" class="text-white/80 hover:text-white py-2">Inscription</a>
+          <a href="login.html" class="text-white/80 hover:text-white py-2">Connexion</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="bg-gradient-to-br from-[#1e3a5f] to-[#0f172a] py-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+    <div class="absolute inset-0">
+      <div class="absolute top-10 right-20 w-64 h-64 rounded-full bg-emerald-500/10 blur-3xl"></div>
+      <div class="absolute bottom-0 left-20 w-48 h-48 rounded-full bg-blue-500/10 blur-3xl"></div>
+    </div>
+    <div class="max-w-5xl mx-auto text-center relative z-10">
+      <div class="inline-flex items-center gap-2 bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 px-4 py-2 rounded-full text-sm font-semibold mb-6">
+        <i class="fa-solid fa-book-open"></i> Détails du programme
+      </div>
+      <h1 class="text-5xl font-black text-white mb-6">Programme de stage<br/><span class="text-emerald-400">Juillet – Septembre 2026</span></h1>
+      <p class="text-white/70 text-xl leading-relaxed max-w-3xl mx-auto mb-10">
+        12 semaines de formation intensive en 3 phases, avec des experts du terrain, des projets réels et une certification professionnelle reconnue.
+      </p>
+      <div class="flex flex-wrap justify-center gap-4">
+        <div class="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl px-6 py-4 text-center">
+          <p class="text-2xl font-black text-white">12</p>
+          <p class="text-white/60 text-sm">Semaines</p>
+        </div>
+        <div class="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl px-6 py-4 text-center">
+          <p class="text-2xl font-black text-emerald-400">3</p>
+          <p class="text-white/60 text-sm">Pôles</p>
+        </div>
+        <div class="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl px-6 py-4 text-center">
+          <p class="text-2xl font-black text-white">48+</p>
+          <p class="text-white/60 text-sm">Modules</p>
+        </div>
+        <div class="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl px-6 py-4 text-center">
+          <p class="text-2xl font-black text-amber-400">1</p>
+          <p class="text-white/60 text-sm">Certificat</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- POLE CARDS -->
+  <section class="py-20 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-14">
+        <span class="text-emerald-600 font-semibold text-sm uppercase tracking-widest">Les 3 filières</span>
+        <h2 class="text-4xl font-black text-[#1e3a5f] mt-2 mb-4">Détail des pôles de formation</h2>
+        <p class="text-gray-500 max-w-2xl mx-auto">Chaque pôle est conçu par des professionnels du numérique avec un curriculum adapté au marché camerounais et africain.</p>
+      </div>
+
+      <!-- POLE 1: Génie Logiciel -->
+      <div class="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden mb-10">
+        <div class="bg-gradient-to-r from-[#1e3a5f] to-blue-700 p-8 text-white flex flex-col md:flex-row items-start md:items-center gap-6">
+          <div class="w-16 h-16 rounded-2xl bg-white/20 flex items-center justify-center flex-shrink-0">
+            <i class="fa-solid fa-code text-3xl"></i>
+          </div>
+          <div>
+            <div class="inline-block bg-blue-400/30 text-blue-200 text-xs font-bold px-3 py-1 rounded-full mb-2">Pôle 1 – Développement</div>
+            <h3 class="text-3xl font-black">Génie Logiciel</h3>
+            <p class="text-white/70 mt-2 max-w-2xl">Formation complète en développement full-stack, applications mobiles et bases de données. Idéal pour les étudiants en informatique et génie logiciel.</p>
+          </div>
+          <a href="inscription.html" class="ml-auto flex-shrink-0 bg-white text-[#1e3a5f] font-bold px-6 py-3 rounded-xl hover:bg-blue-50 transition-colors">
+            S'inscrire <i class="fa-solid fa-arrow-right ml-1"></i>
+          </a>
+        </div>
+        <div class="p-8">
+          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div class="bg-blue-50 rounded-2xl p-5 border border-blue-100">
+              <i class="fa-brands fa-php text-blue-600 text-2xl mb-3"></i>
+              <h4 class="font-bold text-[#1e3a5f] mb-1">PHP & Laravel</h4>
+              <p class="text-gray-500 text-sm">MVC, Eloquent ORM, API REST, authentification, middleware, queues et déploiement.</p>
+            </div>
+            <div class="bg-blue-50 rounded-2xl p-5 border border-blue-100">
+              <i class="fa-brands fa-react text-blue-500 text-2xl mb-3"></i>
+              <h4 class="font-bold text-[#1e3a5f] mb-1">React.js & Vue.js</h4>
+              <p class="text-gray-500 text-sm">Composants, state management, hooks, routing, intégration API et performance frontend.</p>
+            </div>
+            <div class="bg-blue-50 rounded-2xl p-5 border border-blue-100">
+              <i class="fa-solid fa-mobile-screen text-blue-600 text-2xl mb-3"></i>
+              <h4 class="font-bold text-[#1e3a5f] mb-1">Flutter Mobile</h4>
+              <p class="text-gray-500 text-sm">Développement cross-platform iOS/Android, widgets, état, navigation et publication app store.</p>
+            </div>
+            <div class="bg-blue-50 rounded-2xl p-5 border border-blue-100">
+              <i class="fa-solid fa-database text-blue-600 text-2xl mb-3"></i>
+              <h4 class="font-bold text-[#1e3a5f] mb-1">Bases de données</h4>
+              <p class="text-gray-500 text-sm">MySQL, PostgreSQL, MongoDB – modélisation, requêtes avancées, indexation et optimisation.</p>
+            </div>
+            <div class="bg-blue-50 rounded-2xl p-5 border border-blue-100">
+              <i class="fa-brands fa-git-alt text-orange-500 text-2xl mb-3"></i>
+              <h4 class="font-bold text-[#1e3a5f] mb-1">Git & Collaboration</h4>
+              <p class="text-gray-500 text-sm">Versioning, branches, pull requests, code review, GitHub et workflows professionnels en équipe.</p>
+            </div>
+            <div class="bg-blue-50 rounded-2xl p-5 border border-blue-100">
+              <i class="fa-solid fa-shield-halved text-blue-700 text-2xl mb-3"></i>
+              <h4 class="font-bold text-[#1e3a5f] mb-1">Sécurité Web</h4>
+              <p class="text-gray-500 text-sm">OWASP Top 10, XSS, CSRF, injection SQL, authentification JWT et bonnes pratiques de sécurité.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- POLE 2: Systèmes & Réseaux -->
+      <div class="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden mb-10">
+        <div class="bg-gradient-to-r from-emerald-600 to-teal-700 p-8 text-white flex flex-col md:flex-row items-start md:items-center gap-6">
+          <div class="w-16 h-16 rounded-2xl bg-white/20 flex items-center justify-center flex-shrink-0">
+            <i class="fa-solid fa-network-wired text-3xl"></i>
+          </div>
+          <div>
+            <div class="inline-block bg-emerald-400/30 text-emerald-200 text-xs font-bold px-3 py-1 rounded-full mb-2">Pôle 2 – Infrastructure</div>
+            <h3 class="text-3xl font-black">Systèmes & Réseaux</h3>
+            <p class="text-white/70 mt-2 max-w-2xl">Administration des systèmes Linux, configuration de réseaux Cisco, cybersécurité et déploiement cloud. Le pôle le plus demandé par les entreprises camerounaises.</p>
+          </div>
+          <a href="inscription.html" class="ml-auto flex-shrink-0 bg-white text-emerald-700 font-bold px-6 py-3 rounded-xl hover:bg-emerald-50 transition-colors">
+            S'inscrire <i class="fa-solid fa-arrow-right ml-1"></i>
+          </a>
+        </div>
+        <div class="p-8">
+          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div class="bg-emerald-50 rounded-2xl p-5 border border-emerald-100">
+              <i class="fa-brands fa-linux text-gray-800 text-2xl mb-3"></i>
+              <h4 class="font-bold text-[#1e3a5f] mb-1">Linux Administration</h4>
+              <p class="text-gray-500 text-sm">Ubuntu Server, gestion des services, automatisation Bash, cron, logs et dépannage système.</p>
+            </div>
+            <div class="bg-emerald-50 rounded-2xl p-5 border border-emerald-100">
+              <i class="fa-solid fa-router text-emerald-600 text-2xl mb-3"></i>
+              <h4 class="font-bold text-[#1e3a5f] mb-1">Cisco & Routage</h4>
+              <p class="text-gray-500 text-sm">Configuration de routeurs/switchs Cisco, OSPF, BGP, VLAN, protocoles réseau et Packet Tracer.</p>
+            </div>
+            <div class="bg-emerald-50 rounded-2xl p-5 border border-emerald-100">
+              <i class="fa-solid fa-lock text-red-500 text-2xl mb-3"></i>
+              <h4 class="font-bold text-[#1e3a5f] mb-1">Cybersécurité</h4>
+              <p class="text-gray-500 text-sm">Pare-feux, IDS/IPS, VPN, cryptographie, audit de sécurité et réponse aux incidents.</p>
+            </div>
+            <div class="bg-emerald-50 rounded-2xl p-5 border border-emerald-100">
+              <i class="fa-brands fa-aws text-orange-500 text-2xl mb-3"></i>
+              <h4 class="font-bold text-[#1e3a5f] mb-1">Cloud & Virtualisation</h4>
+              <p class="text-gray-500 text-sm">AWS/Azure basics, VMware, Docker, déploiement de services et infrastructure as code.</p>
+            </div>
+            <div class="bg-emerald-50 rounded-2xl p-5 border border-emerald-100">
+              <i class="fa-solid fa-server text-emerald-700 text-2xl mb-3"></i>
+              <h4 class="font-bold text-[#1e3a5f] mb-1">Serveurs & Services</h4>
+              <p class="text-gray-500 text-sm">Apache, Nginx, DNS, DHCP, Active Directory, messagerie et supervision avec Nagios/Zabbix.</p>
+            </div>
+            <div class="bg-emerald-50 rounded-2xl p-5 border border-emerald-100">
+              <i class="fa-solid fa-wifi text-teal-600 text-2xl mb-3"></i>
+              <h4 class="font-bold text-[#1e3a5f] mb-1">Réseaux Sans-Fil</h4>
+              <p class="text-gray-500 text-sm">Wi-Fi enterprise, WPA2/WPA3, déploiement d'AP, analyse de spectre et optimisation réseau.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- POLE 3: Software Engineering -->
+      <div class="bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden">
+        <div class="bg-gradient-to-r from-amber-500 to-orange-600 p-8 text-white flex flex-col md:flex-row items-start md:items-center gap-6">
+          <div class="w-16 h-16 rounded-2xl bg-white/20 flex items-center justify-center flex-shrink-0">
+            <i class="fa-solid fa-microchip text-3xl"></i>
+          </div>
+          <div>
+            <div class="inline-block bg-amber-400/30 text-amber-100 text-xs font-bold px-3 py-1 rounded-full mb-2">Pôle 3 – Ingénierie</div>
+            <h3 class="text-3xl font-black">Software Engineering</h3>
+            <p class="text-white/70 mt-2 max-w-2xl">Architecture logicielle, DevOps, tests et méthodologies agiles. Pour ceux qui veulent atteindre l'excellence en génie logiciel.</p>
+          </div>
+          <a href="inscription.html" class="ml-auto flex-shrink-0 bg-white text-amber-700 font-bold px-6 py-3 rounded-xl hover:bg-amber-50 transition-colors">
+            S'inscrire <i class="fa-solid fa-arrow-right ml-1"></i>
+          </a>
+        </div>
+        <div class="p-8">
+          <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div class="bg-amber-50 rounded-2xl p-5 border border-amber-100">
+              <i class="fa-solid fa-sitemap text-amber-600 text-2xl mb-3"></i>
+              <h4 class="font-bold text-[#1e3a5f] mb-1">Architecture logicielle</h4>
+              <p class="text-gray-500 text-sm">Design patterns, microservices, DDD, API design, SOA et architecture hexagonale.</p>
+            </div>
+            <div class="bg-amber-50 rounded-2xl p-5 border border-amber-100">
+              <i class="fa-solid fa-infinity text-amber-600 text-2xl mb-3"></i>
+              <h4 class="font-bold text-[#1e3a5f] mb-1">DevOps & CI/CD</h4>
+              <p class="text-gray-500 text-sm">Jenkins, GitHub Actions, Docker, Kubernetes, pipelines de déploiement et infrastructure as code.</p>
+            </div>
+            <div class="bg-amber-50 rounded-2xl p-5 border border-amber-100">
+              <i class="fa-solid fa-vial text-amber-600 text-2xl mb-3"></i>
+              <h4 class="font-bold text-[#1e3a5f] mb-1">Tests & Qualité</h4>
+              <p class="text-gray-500 text-sm">TDD, BDD, tests unitaires, d'intégration, end-to-end avec PHPUnit, Jest et Cypress.</p>
+            </div>
+            <div class="bg-amber-50 rounded-2xl p-5 border border-amber-100">
+              <i class="fa-solid fa-users-gear text-amber-600 text-2xl mb-3"></i>
+              <h4 class="font-bold text-[#1e3a5f] mb-1">Agile & Scrum</h4>
+              <p class="text-gray-500 text-sm">Sprints, user stories, backlog, retrospectives, planning poker et gestion de projet Jira.</p>
+            </div>
+            <div class="bg-amber-50 rounded-2xl p-5 border border-amber-100">
+              <i class="fa-brands fa-docker text-blue-500 text-2xl mb-3"></i>
+              <h4 class="font-bold text-[#1e3a5f] mb-1">Conteneurisation</h4>
+              <p class="text-gray-500 text-sm">Docker, Docker Compose, Kubernetes, gestion des images, orchestration et déploiement cloud.</p>
+            </div>
+            <div class="bg-amber-50 rounded-2xl p-5 border border-amber-100">
+              <i class="fa-solid fa-chart-line text-amber-600 text-2xl mb-3"></i>
+              <h4 class="font-bold text-[#1e3a5f] mb-1">Monitoring & Performance</h4>
+              <p class="text-gray-500 text-sm">Prometheus, Grafana, logging centralisé, alertes, optimisation des performances et SLA.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 12-WEEK TIMELINE -->
+  <section class="py-20 bg-white px-4 sm:px-6 lg:px-8">
+    <div class="max-w-6xl mx-auto">
+      <div class="text-center mb-14">
+        <span class="text-emerald-600 font-semibold text-sm uppercase tracking-widest">Planning</span>
+        <h2 class="text-4xl font-black text-[#1e3a5f] mt-2 mb-4">Calendrier 12 semaines</h2>
+        <p class="text-gray-500 max-w-2xl mx-auto">Juillet, Août et Septembre 2026 – un programme progressif et intensif.</p>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full min-w-[700px]">
+          <thead>
+            <tr class="bg-[#1e3a5f] text-white">
+              <th class="py-4 px-6 text-left rounded-tl-xl font-semibold">Semaine</th>
+              <th class="py-4 px-6 text-left font-semibold">Période</th>
+              <th class="py-4 px-6 text-left font-semibold">Phase</th>
+              <th class="py-4 px-6 text-left rounded-tr-xl font-semibold">Contenu principal</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="border-b border-gray-100 hover:bg-blue-50/50 transition-colors">
+              <td class="py-4 px-6"><span class="bg-blue-100 text-blue-700 text-sm font-bold px-3 py-1 rounded-full">S1</span></td>
+              <td class="py-4 px-6 text-gray-600 text-sm">1–5 Juillet</td>
+              <td class="py-4 px-6"><span class="bg-blue-50 text-blue-600 text-xs font-semibold px-2 py-1 rounded">Fondations</span></td>
+              <td class="py-4 px-6 text-gray-700 text-sm">Accueil, orientation, outils de travail, environnements de développement</td>
+            </tr>
+            <tr class="border-b border-gray-100 hover:bg-blue-50/50 transition-colors bg-gray-50/50">
+              <td class="py-4 px-6"><span class="bg-blue-100 text-blue-700 text-sm font-bold px-3 py-1 rounded-full">S2</span></td>
+              <td class="py-4 px-6 text-gray-600 text-sm">8–12 Juillet</td>
+              <td class="py-4 px-6"><span class="bg-blue-50 text-blue-600 text-xs font-semibold px-2 py-1 rounded">Fondations</span></td>
+              <td class="py-4 px-6 text-gray-700 text-sm">Bases techniques par pôle – Introduction aux langages et frameworks</td>
+            </tr>
+            <tr class="border-b border-gray-100 hover:bg-blue-50/50 transition-colors">
+              <td class="py-4 px-6"><span class="bg-blue-100 text-blue-700 text-sm font-bold px-3 py-1 rounded-full">S3</span></td>
+              <td class="py-4 px-6 text-gray-600 text-sm">15–19 Juillet</td>
+              <td class="py-4 px-6"><span class="bg-blue-50 text-blue-600 text-xs font-semibold px-2 py-1 rounded">Fondations</span></td>
+              <td class="py-4 px-6 text-gray-700 text-sm">Concepts avancés du pôle, exercices pratiques guidés</td>
+            </tr>
+            <tr class="border-b border-gray-100 hover:bg-blue-50/50 transition-colors bg-gray-50/50">
+              <td class="py-4 px-6"><span class="bg-blue-100 text-blue-700 text-sm font-bold px-3 py-1 rounded-full">S4</span></td>
+              <td class="py-4 px-6 text-gray-600 text-sm">22–26 Juillet</td>
+              <td class="py-4 px-6"><span class="bg-blue-50 text-blue-600 text-xs font-semibold px-2 py-1 rounded">Fondations</span></td>
+              <td class="py-4 px-6 text-gray-700 text-sm">Évaluation formative Phase 1 + correction et feedback</td>
+            </tr>
+            <tr class="border-b border-gray-100 hover:bg-emerald-50/50 transition-colors">
+              <td class="py-4 px-6"><span class="bg-emerald-100 text-emerald-700 text-sm font-bold px-3 py-1 rounded-full">S5</span></td>
+              <td class="py-4 px-6 text-gray-600 text-sm">29 Juillet–2 Août</td>
+              <td class="py-4 px-6"><span class="bg-emerald-50 text-emerald-600 text-xs font-semibold px-2 py-1 rounded">Pratique</span></td>
+              <td class="py-4 px-6 text-gray-700 text-sm">Mini-projet individuel – Conception et démarrage</td>
+            </tr>
+            <tr class="border-b border-gray-100 hover:bg-emerald-50/50 transition-colors bg-gray-50/50">
+              <td class="py-4 px-6"><span class="bg-emerald-100 text-emerald-700 text-sm font-bold px-3 py-1 rounded-full">S6</span></td>
+              <td class="py-4 px-6 text-gray-600 text-sm">5–9 Août</td>
+              <td class="py-4 px-6"><span class="bg-emerald-50 text-emerald-600 text-xs font-semibold px-2 py-1 rounded">Pratique</span></td>
+              <td class="py-4 px-6 text-gray-700 text-sm">Ateliers techniques avancés – Workshops sectoriels</td>
+            </tr>
+            <tr class="border-b border-gray-100 hover:bg-emerald-50/50 transition-colors">
+              <td class="py-4 px-6"><span class="bg-emerald-100 text-emerald-700 text-sm font-bold px-3 py-1 rounded-full">S7</span></td>
+              <td class="py-4 px-6 text-gray-600 text-sm">12–16 Août</td>
+              <td class="py-4 px-6"><span class="bg-emerald-50 text-emerald-600 text-xs font-semibold px-2 py-1 rounded">Pratique</span></td>
+              <td class="py-4 px-6 text-gray-700 text-sm">Projet d'équipe – Sprint 1, collaboration et revues de code</td>
+            </tr>
+            <tr class="border-b border-gray-100 hover:bg-emerald-50/50 transition-colors bg-gray-50/50">
+              <td class="py-4 px-6"><span class="bg-emerald-100 text-emerald-700 text-sm font-bold px-3 py-1 rounded-full">S8</span></td>
+              <td class="py-4 px-6 text-gray-600 text-sm">19–23 Août</td>
+              <td class="py-4 px-6"><span class="bg-emerald-50 text-emerald-600 text-xs font-semibold px-2 py-1 rounded">Pratique</span></td>
+              <td class="py-4 px-6 text-gray-700 text-sm">Évaluation formative Phase 2 + coaching individuel</td>
+            </tr>
+            <tr class="border-b border-gray-100 hover:bg-amber-50/50 transition-colors">
+              <td class="py-4 px-6"><span class="bg-amber-100 text-amber-700 text-sm font-bold px-3 py-1 rounded-full">S9</span></td>
+              <td class="py-4 px-6 text-gray-600 text-sm">26–30 Août</td>
+              <td class="py-4 px-6"><span class="bg-amber-50 text-amber-600 text-xs font-semibold px-2 py-1 rounded">Projet Final</span></td>
+              <td class="py-4 px-6 text-gray-700 text-sm">Lancement du projet capstone – Constitution des équipes</td>
+            </tr>
+            <tr class="border-b border-gray-100 hover:bg-amber-50/50 transition-colors bg-gray-50/50">
+              <td class="py-4 px-6"><span class="bg-amber-100 text-amber-700 text-sm font-bold px-3 py-1 rounded-full">S10</span></td>
+              <td class="py-4 px-6 text-gray-600 text-sm">2–6 Septembre</td>
+              <td class="py-4 px-6"><span class="bg-amber-50 text-amber-600 text-xs font-semibold px-2 py-1 rounded">Projet Final</span></td>
+              <td class="py-4 px-6 text-gray-700 text-sm">Développement intensif du projet capstone – Sprint 1 & 2</td>
+            </tr>
+            <tr class="border-b border-gray-100 hover:bg-amber-50/50 transition-colors">
+              <td class="py-4 px-6"><span class="bg-amber-100 text-amber-700 text-sm font-bold px-3 py-1 rounded-full">S11</span></td>
+              <td class="py-4 px-6 text-gray-600 text-sm">9–13 Septembre</td>
+              <td class="py-4 px-6"><span class="bg-amber-50 text-amber-600 text-xs font-semibold px-2 py-1 rounded">Projet Final</span></td>
+              <td class="py-4 px-6 text-gray-700 text-sm">Finalisation du projet, tests, documentation et préparation soutenance</td>
+            </tr>
+            <tr class="hover:bg-amber-50/50 transition-colors bg-gray-50/50">
+              <td class="py-4 px-6"><span class="bg-amber-100 text-amber-700 text-sm font-bold px-3 py-1 rounded-full">S12</span></td>
+              <td class="py-4 px-6 text-gray-600 text-sm">16–20 Septembre</td>
+              <td class="py-4 px-6"><span class="bg-amber-50 text-amber-600 text-xs font-semibold px-2 py-1 rounded">Projet Final</span></td>
+              <td class="py-4 px-6 text-gray-700 text-sm font-semibold text-amber-700">Présentation devant jury + Cérémonie de remise des certificats</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- EVALUATION METHODOLOGY -->
+  <section class="py-20 bg-gradient-to-br from-[#f8fafc] to-blue-50/50 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto">
+      <div class="text-center mb-14">
+        <span class="text-emerald-600 font-semibold text-sm uppercase tracking-widest">Évaluation</span>
+        <h2 class="text-4xl font-black text-[#1e3a5f] mt-2 mb-4">Méthodologie d'évaluation</h2>
+        <p class="text-gray-500 max-w-2xl mx-auto">Un système d'évaluation continu et équilibré pour mesurer votre progression tout au long du parcours.</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="card-hover bg-white rounded-2xl p-7 shadow-lg border border-gray-100 text-center">
+          <div class="w-16 h-16 rounded-2xl bg-blue-100 flex items-center justify-center mx-auto mb-4">
+            <i class="fa-solid fa-clipboard-check text-blue-600 text-2xl"></i>
+          </div>
+          <div class="text-4xl font-black text-[#1e3a5f] mb-1">30<span class="text-emerald-500 text-2xl">%</span></div>
+          <h4 class="font-bold text-gray-800 mb-2">Évaluations formatives</h4>
+          <p class="text-gray-500 text-sm">Quiz hebdomadaires, exercices pratiques et participation active aux sessions.</p>
+        </div>
+        <div class="card-hover bg-white rounded-2xl p-7 shadow-lg border border-gray-100 text-center">
+          <div class="w-16 h-16 rounded-2xl bg-emerald-100 flex items-center justify-center mx-auto mb-4">
+            <i class="fa-solid fa-laptop-code text-emerald-600 text-2xl"></i>
+          </div>
+          <div class="text-4xl font-black text-[#1e3a5f] mb-1">25<span class="text-emerald-500 text-2xl">%</span></div>
+          <h4 class="font-bold text-gray-800 mb-2">Mini-projets</h4>
+          <p class="text-gray-500 text-sm">Deux mini-projets individuels évalués par les formateurs et les pairs.</p>
+        </div>
+        <div class="card-hover bg-white rounded-2xl p-7 shadow-lg border border-gray-100 text-center">
+          <div class="w-16 h-16 rounded-2xl bg-amber-100 flex items-center justify-center mx-auto mb-4">
+            <i class="fa-solid fa-users text-amber-600 text-2xl"></i>
+          </div>
+          <div class="text-4xl font-black text-[#1e3a5f] mb-1">45<span class="text-emerald-500 text-2xl">%</span></div>
+          <h4 class="font-bold text-gray-800 mb-2">Projet capstone</h4>
+          <p class="text-gray-500 text-sm">Projet final en équipe présenté devant un jury de professionnels.</p>
+        </div>
+        <div class="card-hover bg-white rounded-2xl p-7 shadow-lg border border-gray-100 text-center">
+          <div class="w-16 h-16 rounded-2xl bg-purple-100 flex items-center justify-center mx-auto mb-4">
+            <i class="fa-solid fa-calendar-check text-purple-600 text-2xl"></i>
+          </div>
+          <div class="text-4xl font-black text-[#1e3a5f] mb-1">90<span class="text-emerald-500 text-xl">%</span></div>
+          <h4 class="font-bold text-gray-800 mb-2">Présence requise</h4>
+          <p class="text-gray-500 text-sm">Assiduité minimum de 90% obligatoire pour l'obtention du certificat.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ ACCORDION -->
+  <section class="py-20 bg-white px-4 sm:px-6 lg:px-8" x-data="{ open: null }">
+    <div class="max-w-4xl mx-auto">
+      <div class="text-center mb-14">
+        <span class="text-emerald-600 font-semibold text-sm uppercase tracking-widest">FAQ</span>
+        <h2 class="text-4xl font-black text-[#1e3a5f] mt-2 mb-4">Questions fréquentes</h2>
+        <p class="text-gray-500 max-w-xl mx-auto">Toutes les réponses à vos questions sur le programme StagesPro.</p>
+      </div>
+
+      <div class="space-y-4">
+        <div class="border border-gray-200 rounded-2xl overflow-hidden">
+          <button class="w-full flex items-center justify-between p-6 text-left hover:bg-gray-50 transition-colors" @click="open = open === 1 ? null : 1">
+            <span class="font-semibold text-[#1e3a5f] text-lg pr-4">Qui peut s'inscrire au programme StagesPro ?</span>
+            <i class="fa-solid text-emerald-500 flex-shrink-0 text-xl transition-transform duration-300" :class="open === 1 ? 'fa-circle-minus' : 'fa-circle-plus'"></i>
+          </button>
+          <div x-show="open === 1" x-transition class="px-6 pb-6 text-gray-600 leading-relaxed">
+            Toute personne étudiant en informatique, génie logiciel, systèmes et réseaux ou domaines connexes peut s'inscrire. Nous accueillons les étudiants des niveaux L2, L3, Master 1 et toute personne ayant des bases en informatique. Les étudiants des écoles partenaires (IAI, ISSAM, SIANTOU, ISESTMA) bénéficient d'une priorité d'inscription.
+          </div>
+        </div>
+
+        <div class="border border-gray-200 rounded-2xl overflow-hidden">
+          <button class="w-full flex items-center justify-between p-6 text-left hover:bg-gray-50 transition-colors" @click="open = open === 2 ? null : 2">
+            <span class="font-semibold text-[#1e3a5f] text-lg pr-4">Comment se déroulent les sessions de formation ?</span>
+            <i class="fa-solid text-emerald-500 flex-shrink-0 text-xl transition-transform duration-300" :class="open === 2 ? 'fa-circle-minus' : 'fa-circle-plus'"></i>
+          </button>
+          <div x-show="open === 2" x-transition class="px-6 pb-6 text-gray-600 leading-relaxed">
+            Les sessions se déroulent en présentiel à Yaoundé, du lundi au vendredi de 8h à 16h. Chaque journée combine des cours magistraux (40%), des travaux pratiques (40%) et du projet (20%). Les ressources sont disponibles 24/7 sur la plateforme en ligne StagesPro pour réviser et compléter les apprentissages.
+          </div>
+        </div>
+
+        <div class="border border-gray-200 rounded-2xl overflow-hidden">
+          <button class="w-full flex items-center justify-between p-6 text-left hover:bg-gray-50 transition-colors" @click="open = open === 3 ? null : 3">
+            <span class="font-semibold text-[#1e3a5f] text-lg pr-4">Que contient le certificat remis à la fin du stage ?</span>
+            <i class="fa-solid text-emerald-500 flex-shrink-0 text-xl transition-transform duration-300" :class="open === 3 ? 'fa-circle-minus' : 'fa-circle-plus'"></i>
+          </button>
+          <div x-show="open === 3" x-transition class="px-6 pb-6 text-gray-600 leading-relaxed">
+            Les stagiaires ayant satisfait les critères (présence ≥ 90%, note finale ≥ 12/20) reçoivent un certificat de stage professionnel StagesPro, attestant les compétences acquises dans leur pôle. Ce certificat est reconnu par nos partenaires entreprises et peut être partagé sur LinkedIn et ajouté au CV.
+          </div>
+        </div>
+
+        <div class="border border-gray-200 rounded-2xl overflow-hidden">
+          <button class="w-full flex items-center justify-between p-6 text-left hover:bg-gray-50 transition-colors" @click="open = open === 4 ? null : 4">
+            <span class="font-semibold text-[#1e3a5f] text-lg pr-4">Peut-on changer de pôle après l'inscription ?</span>
+            <i class="fa-solid text-emerald-500 flex-shrink-0 text-xl transition-transform duration-300" :class="open === 4 ? 'fa-circle-minus' : 'fa-circle-plus'"></i>
+          </button>
+          <div x-show="open === 4" x-transition class="px-6 pb-6 text-gray-600 leading-relaxed">
+            Un changement de pôle est possible uniquement dans les 5 premiers jours suivant le démarrage du stage, sous réserve de disponibilité. Passé ce délai, aucun changement ne sera accepté. Nous recommandons fortement de bien réfléchir à votre choix lors de l'inscription.
+          </div>
+        </div>
+
+        <div class="border border-gray-200 rounded-2xl overflow-hidden">
+          <button class="w-full flex items-center justify-between p-6 text-left hover:bg-gray-50 transition-colors" @click="open = open === 5 ? null : 5">
+            <span class="font-semibold text-[#1e3a5f] text-lg pr-4">Comment payer les 50 000 FCFA de frais d'inscription ?</span>
+            <i class="fa-solid text-emerald-500 flex-shrink-0 text-xl transition-transform duration-300" :class="open === 5 ? 'fa-circle-minus' : 'fa-circle-plus'"></i>
+          </button>
+          <div x-show="open === 5" x-transition class="px-6 pb-6 text-gray-600 leading-relaxed">
+            Le paiement peut se faire via Orange Money, MTN Mobile Money ou en espèces directement dans nos locaux. Un paiement en deux tranches est possible : 25 000 FCFA à l'inscription et 25 000 FCFA avant la semaine 5. Pour toute question de paiement, contactez-nous sur WhatsApp : +237 600 000 000.
+          </div>
+        </div>
+
+        <div class="border border-gray-200 rounded-2xl overflow-hidden">
+          <button class="w-full flex items-center justify-between p-6 text-left hover:bg-gray-50 transition-colors" @click="open = open === 6 ? null : 6">
+            <span class="font-semibold text-[#1e3a5f] text-lg pr-4">Y a-t-il des débouchés professionnels à la fin du programme ?</span>
+            <i class="fa-solid text-emerald-500 flex-shrink-0 text-xl transition-transform duration-300" :class="open === 6 ? 'fa-circle-minus' : 'fa-circle-plus'"></i>
+          </button>
+          <div x-show="open === 6" x-transition class="px-6 pb-6 text-gray-600 leading-relaxed">
+            StagesPro organise une journée de recrutement en fin de programme où des entreprises partenaires rencontrent les stagiaires. Des offres d'emploi et de stage longue durée sont régulièrement partagées via notre réseau. Environ 65% de nos anciens stagiaires ont trouvé un poste dans les 3 mois suivant la fin du programme.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA FINALE -->
+  <section class="py-20 bg-gradient-to-r from-[#1e3a5f] to-emerald-600 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-4xl mx-auto text-center">
+      <h2 class="text-4xl font-black text-white mb-4">Prêt à commencer votre stage ?</h2>
+      <p class="text-white/80 text-xl mb-10">Rejoignez les 80+ stagiaires qui ont déjà fait confiance à StagesPro pour lancer leur carrière.</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="inscription.html" class="inline-flex items-center justify-center gap-2 bg-white text-[#1e3a5f] font-bold px-10 py-4 rounded-xl text-lg transition-all hover:bg-blue-50 shadow-xl">
+          <i class="fa-solid fa-rocket"></i> S'inscrire maintenant
+        </a>
+        <a href="https://wa.me/237600000000" target="_blank" class="inline-flex items-center justify-center gap-2 bg-white/10 hover:bg-white/20 border border-white/30 text-white font-semibold px-10 py-4 rounded-xl text-lg transition-all">
+          <i class="fa-brands fa-whatsapp"></i> Poser une question
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="bg-[#0f172a] text-white py-10 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-lg bg-emerald-500 flex items-center justify-center">
+          <i class="fa-solid fa-laptop-code text-white text-sm"></i>
+        </div>
+        <span class="font-bold text-lg">Stages<span class="text-emerald-400">Pro</span></span>
+      </div>
+      <div class="flex gap-6 text-gray-400 text-sm">
+        <a href="index.html" class="hover:text-white transition-colors">Accueil</a>
+        <a href="programme.html" class="hover:text-white transition-colors">Programme</a>
+        <a href="inscription.html" class="hover:text-white transition-colors">Inscription</a>
+        <a href="login.html" class="hover:text-white transition-colors">Connexion</a>
+      </div>
+      <p class="text-gray-500 text-sm">&copy; 2026 StagesPro Cameroun</p>
+    </div>
+  </footer>
+
+  <a href="https://wa.me/237600000000" target="_blank"
+     class="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-green-500 hover:bg-green-600 text-white flex items-center justify-center shadow-2xl transition-transform hover:scale-110">
+    <i class="fa-brands fa-whatsapp text-2xl"></i>
+  </a>
+
+</body>
+</html>

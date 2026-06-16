@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gestion des Cours – StagesPro Cameroun</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { inter: ['Inter', 'sans-serif'] },
+          colors: {
+            primary: { 50:'#eff6ff', 100:'#dbeafe', 500:'#3b82f6', 600:'#2563eb', 700:'#1d4ed8', 800:'#1e3a5f', 900:'#0f172a' },
+            emerald: { 400:'#34d399', 500:'#10b981', 600:'#059669' }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .sidebar-link { transition: background 0.2s ease, color 0.2s ease; }
+    .card-hover { transition: box-shadow 0.2s ease, transform 0.2s ease; }
+    .card-hover:hover { box-shadow: 0 8px 24px rgba(0,0,0,0.10); transform: translateY(-2px); }
+    [x-cloak] { display: none !important; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+    .drop-zone { transition: border-color 0.2s, background 0.2s; }
+    .drop-zone:hover { border-color: #3b82f6; background: #eff6ff; }
+    .toggle-bg { transition: background 0.2s; }
+  </style>
+</head>
+<body class="bg-gray-50" x-data="{
+  modalOpen: false,
+  publishNow: false,
+  contentType: 'video',
+  deleteConfirm: false,
+  deleteCourseTitle: ''
+}">
+
+  <!-- ===================== SIDEBAR ===================== -->
+  <aside
+    class="fixed left-0 top-0 h-full w-64 z-30 flex flex-col shadow-2xl"
+    style="background:#0f172a"
+  >
+    <!-- Logo -->
+    <div class="flex items-center gap-3 px-6 py-6 border-b border-white/10">
+      <div class="w-10 h-10 rounded-xl bg-primary-600 flex items-center justify-center shadow-lg">
+        <i class="fa-solid fa-graduation-cap text-white text-lg"></i>
+      </div>
+      <div>
+        <p class="text-white font-bold text-xl leading-tight tracking-wide">StagesPro</p>
+        <p class="text-blue-400 text-[10px] font-semibold uppercase tracking-widest">Encadreur</p>
+      </div>
+    </div>
+
+    <!-- Nav -->
+    <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
+      <p class="text-white/30 text-[10px] font-semibold uppercase tracking-widest mb-3 px-3">Navigation</p>
+
+      <a href="dashboard-encadreur.html"
+         class="sidebar-link flex items-center gap-3 text-white/70 hover:text-white hover:bg-white/10 py-3 px-4 rounded-lg text-sm font-medium">
+        <i class="fa-solid fa-house w-4 text-center"></i>
+        Tableau de bord
+      </a>
+
+      <a href="mes-stagiaires.html"
+         class="sidebar-link flex items-center gap-3 text-white/70 hover:text-white hover:bg-white/10 py-3 px-4 rounded-lg text-sm font-medium">
+        <i class="fa-solid fa-users w-4 text-center"></i>
+        Mes Stagiaires
+      </a>
+
+      <a href="gestion-cours.html"
+         class="sidebar-link flex items-center gap-3 text-white py-3 rounded-lg text-sm font-semibold"
+         style="background:rgba(59,130,246,0.25); border-left: 3px solid #3b82f6; padding: 0.75rem 1rem 0.75rem calc(1rem - 3px);">
+        <i class="fa-solid fa-book-open w-4 text-center text-primary-400"></i>
+        Gestion des Cours
+      </a>
+
+      <a href="presences.html"
+         class="sidebar-link flex items-center gap-3 text-white/70 hover:text-white hover:bg-white/10 py-3 px-4 rounded-lg text-sm font-medium">
+        <i class="fa-solid fa-calendar-check w-4 text-center"></i>
+        Présences
+      </a>
+
+      <div class="pt-4 border-t border-white/10 mt-4 space-y-1">
+        <p class="text-white/30 text-[10px] font-semibold uppercase tracking-widest mb-3 px-3">Compte</p>
+        <a href="#"
+           class="sidebar-link flex items-center gap-3 text-white/70 hover:text-white hover:bg-white/10 py-3 px-4 rounded-lg text-sm font-medium">
+          <i class="fa-solid fa-user w-4 text-center"></i>
+          Mon Profil
+        </a>
+        <a href="#"
+           class="sidebar-link flex items-center gap-3 text-red-400 hover:text-red-300 hover:bg-red-500/10 py-3 px-4 rounded-lg text-sm font-medium">
+          <i class="fa-solid fa-right-from-bracket w-4 text-center"></i>
+          Déconnexion
+        </a>
+      </div>
+    </nav>
+
+    <!-- Supervisor card -->
+    <div class="px-4 py-4 border-t border-white/10">
+      <div class="flex items-center gap-3 bg-white/5 rounded-xl p-3">
+        <div class="w-9 h-9 rounded-full bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">FP</div>
+        <div class="min-w-0">
+          <p class="text-white text-sm font-semibold truncate">Fofack Paul</p>
+          <p class="text-white/40 text-xs truncate">Superviseur principal</p>
+        </div>
+        <i class="fa-solid fa-ellipsis-vertical text-white/30 ml-auto cursor-pointer hover:text-white/60"></i>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ===================== MAIN CONTENT ===================== -->
+  <main class="ml-64 min-h-screen bg-gray-50">
+
+    <!-- TOP BAR -->
+    <header class="bg-white border-b border-gray-200 px-8 py-4 flex items-center justify-between sticky top-0 z-20 shadow-sm">
+      <div class="flex items-center gap-3 flex-1 max-w-md">
+        <div class="relative flex-1">
+          <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+          <input
+            type="text"
+            placeholder="Recherche rapide..."
+            class="w-full pl-9 pr-4 py-2 bg-gray-100 border border-transparent rounded-lg text-sm focus:outline-none focus:border-primary-500 focus:bg-white transition"
+          />
+        </div>
+      </div>
+      <div class="flex items-center gap-4">
+        <button class="relative p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition">
+          <i class="fa-regular fa-bell text-lg"></i>
+          <span class="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
+        </button>
+        <button class="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition">
+          <i class="fa-regular fa-envelope text-lg"></i>
+        </button>
+        <div class="h-6 w-px bg-gray-200"></div>
+        <div class="flex items-center gap-3 cursor-pointer hover:bg-gray-50 rounded-lg px-2 py-1.5 transition">
+          <div class="w-8 h-8 rounded-full bg-gradient-to-br from-primary-500 to-primary-700 flex items-center justify-center text-white text-xs font-bold">FP</div>
+          <div class="hidden sm:block">
+            <p class="text-sm font-semibold text-gray-800 leading-tight">Fofack Paul</p>
+            <p class="text-xs text-gray-500">Encadreur</p>
+          </div>
+          <i class="fa-solid fa-chevron-down text-gray-400 text-xs"></i>
+        </div>
+      </div>
+    </header>
+
+    <div class="px-8 py-8">
+
+      <!-- PAGE HEADER -->
+      <div class="flex flex-wrap items-center justify-between gap-4 mb-6">
+        <div>
+          <h1 class="text-2xl font-bold text-gray-900">Gestion des Cours</h1>
+          <p class="text-gray-500 text-sm mt-0.5">Créez et gérez vos ressources pédagogiques</p>
+        </div>
+        <button
+          @click="modalOpen = true"
+          class="flex items-center gap-2 bg-primary-600 hover:bg-primary-700 text-white text-sm font-semibold px-5 py-2.5 rounded-lg transition shadow-sm">
+          <i class="fa-solid fa-plus"></i>
+          Ajouter un cours
+        </button>
+      </div>
+
+      <!-- STAT CARDS ROW -->
+      <div class="grid grid-cols-3 gap-4 mb-8">
+        <div class="bg-white rounded-xl p-5 border border-gray-100 shadow-sm flex items-center gap-4">
+          <div class="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center flex-shrink-0">
+            <i class="fa-solid fa-circle-check text-emerald-500 text-xl"></i>
+          </div>
+          <div>
+            <p class="text-3xl font-bold text-gray-900">6</p>
+            <p class="text-sm text-gray-500 font-medium">Cours publiés</p>
+          </div>
+          <div class="ml-auto">
+            <span class="text-xs bg-emerald-100 text-emerald-700 font-semibold px-2 py-1 rounded-full">Actif</span>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl p-5 border border-gray-100 shadow-sm flex items-center gap-4">
+          <div class="w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center flex-shrink-0">
+            <i class="fa-solid fa-pencil text-amber-500 text-xl"></i>
+          </div>
+          <div>
+            <p class="text-3xl font-bold text-gray-900">2</p>
+            <p class="text-sm text-gray-500 font-medium">Brouillons</p>
+          </div>
+          <div class="ml-auto">
+            <span class="text-xs bg-amber-100 text-amber-700 font-semibold px-2 py-1 rounded-full">En cours</span>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl p-5 border border-gray-100 shadow-sm flex items-center gap-4">
+          <div class="w-12 h-12 rounded-xl bg-primary-50 flex items-center justify-center flex-shrink-0">
+            <i class="fa-solid fa-graduation-cap text-primary-600 text-xl"></i>
+          </div>
+          <div>
+            <p class="text-3xl font-bold text-gray-900">156</p>
+            <p class="text-sm text-gray-500 font-medium">Apprenants inscrits</p>
+          </div>
+          <div class="ml-auto">
+            <span class="text-xs bg-primary-100 text-primary-700 font-semibold px-2 py-1 rounded-full">Total</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- FILTER BAR -->
+      <div class="flex items-center gap-3 mb-6">
+        <button class="flex items-center gap-2 bg-primary-600 text-white text-sm font-semibold px-4 py-2 rounded-lg">
+          <i class="fa-solid fa-border-all text-xs"></i>
+          Tous
+        </button>
+        <button class="flex items-center gap-2 bg-white border border-gray-200 text-gray-600 text-sm font-medium px-4 py-2 rounded-lg hover:bg-gray-50 transition">
+          <i class="fa-solid fa-circle-check text-emerald-500 text-xs"></i>
+          Publiés
+        </button>
+        <button class="flex items-center gap-2 bg-white border border-gray-200 text-gray-600 text-sm font-medium px-4 py-2 rounded-lg hover:bg-gray-50 transition">
+          <i class="fa-solid fa-pencil text-amber-500 text-xs"></i>
+          Brouillons
+        </button>
+        <div class="ml-auto relative">
+          <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm"></i>
+          <input type="text" placeholder="Filtrer les cours..." class="pl-9 pr-4 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-100 transition w-56" />
+        </div>
+        <select class="border border-gray-200 rounded-lg py-2 px-3 text-sm text-gray-700 focus:outline-none focus:border-primary-500 bg-white transition">
+          <option>Tous les pôles</option>
+          <option>Génie Logiciel</option>
+          <option>Software Engineering</option>
+          <option>Systèmes &amp; Réseaux</option>
+        </select>
+      </div>
+
+      <!-- COURSE CARDS GRID -->
+      <div class="grid grid-cols-3 gap-6 mb-8">
+
+        <!-- Card 1: Introduction à Laravel -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 card-hover overflow-hidden flex flex-col">
+          <div class="p-6 flex-1">
+            <div class="flex items-start justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center flex-shrink-0">
+                <i class="fa-solid fa-code text-blue-600 text-xl"></i>
+              </div>
+              <span class="inline-flex items-center gap-1 bg-emerald-100 text-emerald-700 text-xs font-semibold px-2.5 py-1 rounded-full">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                Actif
+              </span>
+            </div>
+            <h3 class="font-bold text-gray-900 text-base mb-2 leading-snug">Introduction à Laravel</h3>
+            <p class="text-gray-500 text-sm leading-relaxed mb-4">Fondamentaux du framework PHP Laravel pour le développement web moderne.</p>
+            <div class="flex items-center gap-4 text-sm text-gray-500 mb-3">
+              <span class="flex items-center gap-1.5">
+                <i class="fa-solid fa-users text-gray-400 text-xs"></i>
+                25 étudiants
+              </span>
+              <span class="flex items-center gap-1.5">
+                <i class="fa-regular fa-clock text-gray-400 text-xs"></i>
+                8h
+              </span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <span class="text-xs bg-blue-50 text-blue-600 font-medium px-2 py-0.5 rounded">Génie Logiciel</span>
+            </div>
+          </div>
+          <div class="px-6 py-4 border-t border-gray-100 bg-gray-50/50 flex items-center gap-2">
+            <button class="flex-1 flex items-center justify-center gap-2 bg-primary-50 hover:bg-primary-100 text-primary-700 text-sm font-semibold py-2 rounded-lg transition">
+              <i class="fa-solid fa-pen"></i>
+              Modifier
+            </button>
+            <button class="flex items-center justify-center gap-2 bg-red-50 hover:bg-red-100 text-red-600 text-sm font-semibold py-2 px-3 rounded-lg transition" @click="deleteConfirm = true; deleteCourseTitle = 'Introduction à Laravel'">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Card 2: Réseaux CISCO -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 card-hover overflow-hidden flex flex-col">
+          <div class="p-6 flex-1">
+            <div class="flex items-start justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-emerald-100 flex items-center justify-center flex-shrink-0">
+                <i class="fa-solid fa-network-wired text-emerald-600 text-xl"></i>
+              </div>
+              <span class="inline-flex items-center gap-1 bg-emerald-100 text-emerald-700 text-xs font-semibold px-2.5 py-1 rounded-full">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                Actif
+              </span>
+            </div>
+            <h3 class="font-bold text-gray-900 text-base mb-2 leading-snug">Réseaux CISCO Niveau 1</h3>
+            <p class="text-gray-500 text-sm leading-relaxed mb-4">Configuration des équipements réseau CISCO, protocoles de routage.</p>
+            <div class="flex items-center gap-4 text-sm text-gray-500 mb-3">
+              <span class="flex items-center gap-1.5">
+                <i class="fa-solid fa-users text-gray-400 text-xs"></i>
+                18 étudiants
+              </span>
+              <span class="flex items-center gap-1.5">
+                <i class="fa-regular fa-clock text-gray-400 text-xs"></i>
+                12h
+              </span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <span class="text-xs bg-emerald-50 text-emerald-600 font-medium px-2 py-0.5 rounded">Systèmes &amp; Réseaux</span>
+            </div>
+          </div>
+          <div class="px-6 py-4 border-t border-gray-100 bg-gray-50/50 flex items-center gap-2">
+            <button class="flex-1 flex items-center justify-center gap-2 bg-primary-50 hover:bg-primary-100 text-primary-700 text-sm font-semibold py-2 rounded-lg transition">
+              <i class="fa-solid fa-pen"></i>
+              Modifier
+            </button>
+            <button class="flex items-center justify-center gap-2 bg-red-50 hover:bg-red-100 text-red-600 text-sm font-semibold py-2 px-3 rounded-lg transition" @click="deleteConfirm = true; deleteCourseTitle = 'Réseaux CISCO Niveau 1'">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Card 3: Bases de données -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 card-hover overflow-hidden flex flex-col">
+          <div class="p-6 flex-1">
+            <div class="flex items-start justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center flex-shrink-0">
+                <i class="fa-solid fa-database text-purple-600 text-xl"></i>
+              </div>
+              <span class="inline-flex items-center gap-1 bg-emerald-100 text-emerald-700 text-xs font-semibold px-2.5 py-1 rounded-full">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                Actif
+              </span>
+            </div>
+            <h3 class="font-bold text-gray-900 text-base mb-2 leading-snug">Bases de données avancées</h3>
+            <p class="text-gray-500 text-sm leading-relaxed mb-4">Optimisation SQL, NoSQL, transactions et conception de schémas complexes.</p>
+            <div class="flex items-center gap-4 text-sm text-gray-500 mb-3">
+              <span class="flex items-center gap-1.5">
+                <i class="fa-solid fa-users text-gray-400 text-xs"></i>
+                22 étudiants
+              </span>
+              <span class="flex items-center gap-1.5">
+                <i class="fa-regular fa-clock text-gray-400 text-xs"></i>
+                10h
+              </span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <span class="text-xs bg-purple-50 text-purple-600 font-medium px-2 py-0.5 rounded">Software Engineering</span>
+            </div>
+          </div>
+          <div class="px-6 py-4 border-t border-gray-100 bg-gray-50/50 flex items-center gap-2">
+            <button class="flex-1 flex items-center justify-center gap-2 bg-primary-50 hover:bg-primary-100 text-primary-700 text-sm font-semibold py-2 rounded-lg transition">
+              <i class="fa-solid fa-pen"></i>
+              Modifier
+            </button>
+            <button class="flex items-center justify-center gap-2 bg-red-50 hover:bg-red-100 text-red-600 text-sm font-semibold py-2 px-3 rounded-lg transition" @click="deleteConfirm = true; deleteCourseTitle = 'Bases de données avancées'">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Card 4: Flutter (Draft) -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 card-hover overflow-hidden flex flex-col">
+          <div class="p-6 flex-1">
+            <div class="flex items-start justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-orange-100 flex items-center justify-center flex-shrink-0">
+                <i class="fa-solid fa-mobile-alt text-orange-500 text-xl"></i>
+              </div>
+              <span class="inline-flex items-center gap-1 bg-gray-100 text-gray-500 text-xs font-semibold px-2.5 py-1 rounded-full">
+                <i class="fa-solid fa-pencil text-xs"></i>
+                Brouillon
+              </span>
+            </div>
+            <h3 class="font-bold text-gray-900 text-base mb-2 leading-snug">Développement Mobile Flutter</h3>
+            <p class="text-gray-500 text-sm leading-relaxed mb-4">Création d'applications mobiles cross-platform avec Flutter et Dart.</p>
+            <div class="flex items-center gap-4 text-sm text-gray-500 mb-3">
+              <span class="flex items-center gap-1.5">
+                <i class="fa-solid fa-users text-gray-400 text-xs"></i>
+                15 étudiants
+              </span>
+              <span class="flex items-center gap-1.5">
+                <i class="fa-regular fa-clock text-gray-400 text-xs"></i>
+                15h
+              </span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <span class="text-xs bg-blue-50 text-blue-600 font-medium px-2 py-0.5 rounded">Génie Logiciel</span>
+            </div>
+          </div>
+          <div class="px-6 py-4 border-t border-gray-100 bg-gray-50/50 flex items-center gap-2">
+            <button class="flex-1 flex items-center justify-center gap-2 bg-primary-50 hover:bg-primary-100 text-primary-700 text-sm font-semibold py-2 rounded-lg transition">
+              <i class="fa-solid fa-pen"></i>
+              Modifier
+            </button>
+            <button class="flex items-center justify-center gap-2 bg-red-50 hover:bg-red-100 text-red-600 text-sm font-semibold py-2 px-3 rounded-lg transition" @click="deleteConfirm = true; deleteCourseTitle = 'Développement Mobile Flutter'">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Card 5: Cybersécurité -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 card-hover overflow-hidden flex flex-col">
+          <div class="p-6 flex-1">
+            <div class="flex items-start justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-red-100 flex items-center justify-center flex-shrink-0">
+                <i class="fa-solid fa-shield-alt text-red-500 text-xl"></i>
+              </div>
+              <span class="inline-flex items-center gap-1 bg-emerald-100 text-emerald-700 text-xs font-semibold px-2.5 py-1 rounded-full">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                Actif
+              </span>
+            </div>
+            <h3 class="font-bold text-gray-900 text-base mb-2 leading-snug">Cybersécurité Fondamentaux</h3>
+            <p class="text-gray-500 text-sm leading-relaxed mb-4">Introduction à la sécurité informatique, cryptographie et ethical hacking.</p>
+            <div class="flex items-center gap-4 text-sm text-gray-500 mb-3">
+              <span class="flex items-center gap-1.5">
+                <i class="fa-solid fa-users text-gray-400 text-xs"></i>
+                20 étudiants
+              </span>
+              <span class="flex items-center gap-1.5">
+                <i class="fa-regular fa-clock text-gray-400 text-xs"></i>
+                20h
+              </span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <span class="text-xs bg-emerald-50 text-emerald-600 font-medium px-2 py-0.5 rounded">Systèmes &amp; Réseaux</span>
+            </div>
+          </div>
+          <div class="px-6 py-4 border-t border-gray-100 bg-gray-50/50 flex items-center gap-2">
+            <button class="flex-1 flex items-center justify-center gap-2 bg-primary-50 hover:bg-primary-100 text-primary-700 text-sm font-semibold py-2 rounded-lg transition">
+              <i class="fa-solid fa-pen"></i>
+              Modifier
+            </button>
+            <button class="flex items-center justify-center gap-2 bg-red-50 hover:bg-red-100 text-red-600 text-sm font-semibold py-2 px-3 rounded-lg transition" @click="deleteConfirm = true; deleteCourseTitle = 'Cybersécurité Fondamentaux'">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Card 6: Cloud AWS (Draft) -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 card-hover overflow-hidden flex flex-col">
+          <div class="p-6 flex-1">
+            <div class="flex items-start justify-between mb-4">
+              <div class="w-12 h-12 rounded-xl bg-sky-100 flex items-center justify-center flex-shrink-0">
+                <i class="fa-solid fa-cloud text-sky-500 text-xl"></i>
+              </div>
+              <span class="inline-flex items-center gap-1 bg-gray-100 text-gray-500 text-xs font-semibold px-2.5 py-1 rounded-full">
+                <i class="fa-solid fa-pencil text-xs"></i>
+                Brouillon
+              </span>
+            </div>
+            <h3 class="font-bold text-gray-900 text-base mb-2 leading-snug">Cloud Computing AWS</h3>
+            <p class="text-gray-500 text-sm leading-relaxed mb-4">Services cloud Amazon : EC2, S3, Lambda et déploiement d'applications.</p>
+            <div class="flex items-center gap-4 text-sm text-gray-500 mb-3">
+              <span class="flex items-center gap-1.5">
+                <i class="fa-solid fa-users text-gray-400 text-xs"></i>
+                12 étudiants
+              </span>
+              <span class="flex items-center gap-1.5">
+                <i class="fa-regular fa-clock text-gray-400 text-xs"></i>
+                18h
+              </span>
+            </div>
+            <div class="flex items-center gap-1.5">
+              <span class="text-xs bg-purple-50 text-purple-600 font-medium px-2 py-0.5 rounded">Software Engineering</span>
+            </div>
+          </div>
+          <div class="px-6 py-4 border-t border-gray-100 bg-gray-50/50 flex items-center gap-2">
+            <button class="flex-1 flex items-center justify-center gap-2 bg-primary-50 hover:bg-primary-100 text-primary-700 text-sm font-semibold py-2 rounded-lg transition">
+              <i class="fa-solid fa-pen"></i>
+              Modifier
+            </button>
+            <button class="flex items-center justify-center gap-2 bg-red-50 hover:bg-red-100 text-red-600 text-sm font-semibold py-2 px-3 rounded-lg transition" @click="deleteConfirm = true; deleteCourseTitle = 'Cloud Computing AWS'">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ADD COURSE CTA CARD -->
+      <div
+        class="border-2 border-dashed border-gray-200 rounded-xl p-8 flex flex-col items-center justify-center text-center cursor-pointer hover:border-primary-400 hover:bg-primary-50/30 transition group"
+        @click="modalOpen = true"
+      >
+        <div class="w-14 h-14 rounded-full bg-primary-100 group-hover:bg-primary-200 flex items-center justify-center mb-3 transition">
+          <i class="fa-solid fa-plus text-primary-600 text-xl"></i>
+        </div>
+        <p class="text-gray-700 font-semibold mb-1">Ajouter un nouveau cours</p>
+        <p class="text-gray-400 text-sm">Cliquez pour créer un cours et le partager avec vos stagiaires</p>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- ===================== MODAL: NOUVEAU COURS ===================== -->
+  <div
+    x-show="modalOpen"
+    x-cloak
+    class="fixed inset-0 z-50 flex items-center justify-center p-4"
+    style="background: rgba(15,23,42,0.6); backdrop-filter: blur(4px);"
+    @click.self="modalOpen = false"
+  >
+    <div
+      class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+      @click.away="modalOpen = false"
+      x-show="modalOpen"
+      x-transition:enter="transition ease-out duration-200"
+      x-transition:enter-start="opacity-0 scale-95"
+      x-transition:enter-end="opacity-100 scale-100"
+      x-transition:leave="transition ease-in duration-150"
+      x-transition:leave-start="opacity-100 scale-100"
+      x-transition:leave-end="opacity-0 scale-95"
+    >
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between px-6 py-5 border-b border-gray-100 sticky top-0 bg-white rounded-t-2xl z-10">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-primary-100 flex items-center justify-center">
+            <i class="fa-solid fa-book-open text-primary-600"></i>
+          </div>
+          <div>
+            <h2 class="text-lg font-bold text-gray-900">Nouveau Cours</h2>
+            <p class="text-xs text-gray-500">Remplissez les informations ci-dessous</p>
+          </div>
+        </div>
+        <button
+          @click="modalOpen = false"
+          class="w-8 h-8 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 flex items-center justify-center transition"
+        >
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="px-6 py-6 space-y-5">
+
+        <!-- Titre -->
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-1.5">
+            Titre du cours <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            placeholder="Ex : Introduction à React.js"
+            class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-100 transition placeholder-gray-400"
+          />
+        </div>
+
+        <!-- Description -->
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-1.5">Description</label>
+          <textarea
+            rows="3"
+            placeholder="Décrivez le contenu et les objectifs pédagogiques de ce cours..."
+            class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-100 transition resize-none placeholder-gray-400"
+          ></textarea>
+          <p class="text-xs text-gray-400 mt-1">0 / 500 caractères</p>
+        </div>
+
+        <!-- Pôle + Durée -->
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-1.5">
+              Pôle <span class="text-red-500">*</span>
+            </label>
+            <select class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm text-gray-700 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-100 bg-white transition">
+              <option value="">Sélectionner un pôle</option>
+              <option>Génie Logiciel</option>
+              <option>Software Engineering</option>
+              <option>Systèmes &amp; Réseaux</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-1.5">Durée estimée</label>
+            <div class="flex items-center gap-2">
+              <input
+                type="number"
+                min="1"
+                placeholder="0"
+                class="flex-1 border border-gray-200 rounded-lg px-4 py-2.5 text-sm text-gray-800 focus:outline-none focus:border-primary-500 focus:ring-2 focus:ring-primary-100 transition"
+              />
+              <span class="text-sm text-gray-500 font-medium whitespace-nowrap">heures</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Type de contenu -->
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-2.5">Type de contenu</label>
+          <div class="grid grid-cols-2 gap-3">
+            <label class="flex items-center gap-3 border border-gray-200 rounded-lg p-3 cursor-pointer hover:border-primary-400 hover:bg-primary-50/30 transition" :class="contentType === 'video' ? 'border-primary-500 bg-primary-50' : ''">
+              <input type="radio" name="content_type" value="video" x-model="contentType" class="text-primary-600 focus:ring-primary-500" />
+              <div class="flex items-center gap-2">
+                <div class="w-7 h-7 rounded-lg bg-red-100 flex items-center justify-center flex-shrink-0">
+                  <i class="fa-solid fa-play text-red-500 text-xs"></i>
+                </div>
+                <span class="text-sm font-medium text-gray-700">Vidéo</span>
+              </div>
+            </label>
+            <label class="flex items-center gap-3 border border-gray-200 rounded-lg p-3 cursor-pointer hover:border-primary-400 hover:bg-primary-50/30 transition" :class="contentType === 'pdf' ? 'border-primary-500 bg-primary-50' : ''">
+              <input type="radio" name="content_type" value="pdf" x-model="contentType" class="text-primary-600 focus:ring-primary-500" />
+              <div class="flex items-center gap-2">
+                <div class="w-7 h-7 rounded-lg bg-orange-100 flex items-center justify-center flex-shrink-0">
+                  <i class="fa-solid fa-file-pdf text-orange-500 text-xs"></i>
+                </div>
+                <span class="text-sm font-medium text-gray-700">Document PDF</span>
+              </div>
+            </label>
+            <label class="flex items-center gap-3 border border-gray-200 rounded-lg p-3 cursor-pointer hover:border-primary-400 hover:bg-primary-50/30 transition" :class="contentType === 'exercice' ? 'border-primary-500 bg-primary-50' : ''">
+              <input type="radio" name="content_type" value="exercice" x-model="contentType" class="text-primary-600 focus:ring-primary-500" />
+              <div class="flex items-center gap-2">
+                <div class="w-7 h-7 rounded-lg bg-emerald-100 flex items-center justify-center flex-shrink-0">
+                  <i class="fa-solid fa-terminal text-emerald-500 text-xs"></i>
+                </div>
+                <span class="text-sm font-medium text-gray-700">Exercice pratique</span>
+              </div>
+            </label>
+            <label class="flex items-center gap-3 border border-gray-200 rounded-lg p-3 cursor-pointer hover:border-primary-400 hover:bg-primary-50/30 transition" :class="contentType === 'quiz' ? 'border-primary-500 bg-primary-50' : ''">
+              <input type="radio" name="content_type" value="quiz" x-model="contentType" class="text-primary-600 focus:ring-primary-500" />
+              <div class="flex items-center gap-2">
+                <div class="w-7 h-7 rounded-lg bg-purple-100 flex items-center justify-center flex-shrink-0">
+                  <i class="fa-solid fa-circle-question text-purple-500 text-xs"></i>
+                </div>
+                <span class="text-sm font-medium text-gray-700">Quiz</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Zone de dépôt fichier -->
+        <div>
+          <label class="block text-sm font-semibold text-gray-700 mb-1.5">Fichiers du cours</label>
+          <div class="drop-zone border-2 border-dashed border-gray-300 rounded-xl p-8 flex flex-col items-center justify-center text-center cursor-pointer">
+            <div class="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center mb-3">
+              <i class="fa-solid fa-cloud-upload-alt text-gray-400 text-xl"></i>
+            </div>
+            <p class="text-sm font-semibold text-gray-700 mb-1">Glissez vos fichiers ici ou cliquez pour parcourir</p>
+            <p class="text-xs text-gray-400">PDF, MP4, ZIP — Max 100 Mo par fichier</p>
+            <button type="button" class="mt-3 text-xs text-primary-600 font-semibold hover:underline">Choisir un fichier</button>
+          </div>
+        </div>
+
+        <!-- Statut toggle -->
+        <div class="bg-gray-50 rounded-xl p-4 border border-gray-100">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm font-semibold text-gray-800" x-text="publishNow ? 'Publier immédiatement' : 'Enregistrer comme brouillon'"></p>
+              <p class="text-xs text-gray-500 mt-0.5" x-text="publishNow ? 'Le cours sera visible par les stagiaires dès maintenant.' : 'Le cours sera sauvegardé mais non visible.'"></p>
+            </div>
+            <button
+              type="button"
+              @click="publishNow = !publishNow"
+              class="toggle-bg relative w-12 h-6 rounded-full flex-shrink-0 focus:outline-none"
+              :class="publishNow ? 'bg-primary-600' : 'bg-gray-300'"
+            >
+              <span
+                class="absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200"
+                :class="publishNow ? 'translate-x-6' : 'translate-x-0'"
+              ></span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="px-6 py-4 border-t border-gray-100 bg-gray-50/50 rounded-b-2xl flex items-center justify-end gap-3 sticky bottom-0">
+        <button
+          @click="modalOpen = false"
+          class="px-5 py-2.5 text-sm font-semibold text-gray-600 bg-white border border-gray-200 rounded-lg hover:bg-gray-100 transition"
+        >
+          Annuler
+        </button>
+        <button
+          class="px-5 py-2.5 text-sm font-semibold text-white bg-primary-600 hover:bg-primary-700 rounded-lg transition shadow-sm flex items-center gap-2"
+          @click="modalOpen = false"
+        >
+          <i class="fa-solid fa-floppy-disk"></i>
+          Enregistrer le cours
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== MODAL: CONFIRM DELETE ===================== -->
+  <div
+    x-show="deleteConfirm"
+    x-cloak
+    class="fixed inset-0 z-50 flex items-center justify-center p-4"
+    style="background: rgba(15,23,42,0.6); backdrop-filter: blur(4px);"
+    @click.self="deleteConfirm = false"
+  >
+    <div
+      class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6"
+      x-show="deleteConfirm"
+      x-transition:enter="transition ease-out duration-200"
+      x-transition:enter-start="opacity-0 scale-95"
+      x-transition:enter-end="opacity-100 scale-100"
+    >
+      <div class="flex items-center justify-center w-14 h-14 rounded-full bg-red-100 mx-auto mb-4">
+        <i class="fa-solid fa-trash text-red-500 text-xl"></i>
+      </div>
+      <h3 class="text-lg font-bold text-gray-900 text-center mb-2">Supprimer ce cours ?</h3>
+      <p class="text-sm text-gray-500 text-center mb-6">
+        Vous êtes sur le point de supprimer <strong x-text="deleteCourseTitle" class="text-gray-800"></strong>. Cette action est irréversible.
+      </p>
+      <div class="flex gap-3">
+        <button
+          @click="deleteConfirm = false"
+          class="flex-1 py-2.5 text-sm font-semibold text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition"
+        >
+          Annuler
+        </button>
+        <button
+          @click="deleteConfirm = false"
+          class="flex-1 py-2.5 text-sm font-semibold text-white bg-red-500 hover:bg-red-600 rounded-lg transition"
+        >
+          Supprimer
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MOBILE BOTTOM NAV -->
+  <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 flex items-center justify-around py-2 z-40 md:hidden shadow-lg">
+    <a href="dashboard-encadreur.html" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary-600 transition px-3 py-1">
+      <i class="fa-solid fa-house text-lg"></i>
+      <span class="text-[10px] font-medium">Accueil</span>
+    </a>
+    <a href="mes-stagiaires.html" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary-600 transition px-3 py-1">
+      <i class="fa-solid fa-users text-lg"></i>
+      <span class="text-[10px] font-medium">Stagiaires</span>
+    </a>
+    <a href="gestion-cours.html" class="flex flex-col items-center gap-1 text-primary-600 px-3 py-1">
+      <i class="fa-solid fa-book-open text-lg"></i>
+      <span class="text-[10px] font-semibold">Cours</span>
+    </a>
+    <a href="#" class="flex flex-col items-center gap-1 text-gray-400 hover:text-primary-600 transition px-3 py-1">
+      <i class="fa-solid fa-user text-lg"></i>
+      <span class="text-[10px] font-medium">Profil</span>
+    </a>
+  </nav>
+
+</body>
+</html>

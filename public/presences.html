@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Présences — StagesPro Cameroun</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { inter: ['Inter', 'sans-serif'] },
+          colors: {
+            primary: { 50:'#eff6ff', 100:'#dbeafe', 500:'#3b82f6', 600:'#2563eb', 700:'#1d4ed8', 800:'#1e3a5f', 900:'#0f172a' },
+            emerald: { 400:'#34d399', 500:'#10b981', 600:'#059669' }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .sidebar-link { transition: background 0.18s, color 0.18s; }
+    .attendance-btn { transition: background 0.15s, color 0.15s, transform 0.1s; }
+    .attendance-btn:active { transform: scale(0.93); }
+    .card-hover { transition: box-shadow 0.18s, transform 0.18s; }
+    .card-hover:hover { box-shadow: 0 8px 32px rgba(37,99,235,0.10); transform: translateY(-2px); }
+    .week-day-card { transition: box-shadow 0.18s, border-color 0.18s; }
+    .week-day-card:hover { box-shadow: 0 4px 18px rgba(37,99,235,0.10); }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #f1f5f9; }
+    ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+    .stat-card { background: white; border-radius: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+    .fade-in { animation: fadeIn 0.35s ease; }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+    .save-btn { background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); }
+    .save-btn:hover { background: linear-gradient(135deg, #1d4ed8 0%, #1e3a5f 100%); }
+    .logo-gradient { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); }
+  </style>
+</head>
+<body class="bg-gray-50" x-data="presencesApp()">
+
+  <!-- ===================== FIXED SIDEBAR ===================== -->
+  <aside class="fixed left-0 top-0 h-full w-64 z-30 flex flex-col" style="background:#0f172a">
+    <!-- Logo -->
+    <div class="flex flex-col items-center py-8 px-4 border-b border-white/10">
+      <div class="logo-gradient w-14 h-14 rounded-2xl flex items-center justify-center mb-3 shadow-lg">
+        <i class="fa-solid fa-graduation-cap text-white text-2xl"></i>
+      </div>
+      <span class="text-white font-bold text-xl tracking-wide">StagesPro</span>
+      <span class="mt-1 text-xs font-semibold tracking-widest uppercase px-3 py-0.5 rounded-full" style="background:rgba(59,130,246,0.18);color:#93c5fd;">ENCADREUR</span>
+    </div>
+
+    <!-- Nav -->
+    <nav class="flex-1 px-3 py-6 space-y-1 overflow-y-auto">
+      <a href="dashboard-encadreur.html"
+         class="sidebar-link flex items-center gap-3 text-white/80 hover:text-white hover:bg-white/10 py-3 px-4 rounded-lg text-sm font-medium">
+        <i class="fa-solid fa-house w-5 text-center text-blue-400"></i>
+        Tableau de bord
+      </a>
+      <a href="mes-stagiaires.html"
+         class="sidebar-link flex items-center gap-3 text-white/80 hover:text-white hover:bg-white/10 py-3 px-4 rounded-lg text-sm font-medium">
+        <i class="fa-solid fa-users w-5 text-center text-blue-400"></i>
+        Mes Stagiaires
+      </a>
+      <a href="gestion-cours.html"
+         class="sidebar-link flex items-center gap-3 text-white/80 hover:text-white hover:bg-white/10 py-3 px-4 rounded-lg text-sm font-medium">
+        <i class="fa-solid fa-book-open w-5 text-center text-blue-400"></i>
+        Gestion des Cours
+      </a>
+      <!-- ACTIVE -->
+      <a href="presences.html"
+         class="sidebar-link flex items-center gap-3 text-white bg-blue-600 py-3 px-4 rounded-lg text-sm font-semibold shadow-md">
+        <i class="fa-solid fa-calendar-check w-5 text-center"></i>
+        Présences
+      </a>
+      <a href="#"
+         class="sidebar-link flex items-center gap-3 text-white/80 hover:text-white hover:bg-white/10 py-3 px-4 rounded-lg text-sm font-medium">
+        <i class="fa-solid fa-user w-5 text-center text-blue-400"></i>
+        Mon Profil
+      </a>
+
+      <div class="pt-4 mt-4 border-t border-white/10">
+        <a href="#"
+           class="sidebar-link flex items-center gap-3 text-red-400 hover:text-red-300 hover:bg-red-500/10 py-3 px-4 rounded-lg text-sm font-medium">
+          <i class="fa-solid fa-right-from-bracket w-5 text-center"></i>
+          Déconnexion
+        </a>
+      </div>
+    </nav>
+
+    <!-- Bottom info -->
+    <div class="px-4 py-4 border-t border-white/10">
+      <div class="flex items-center gap-3">
+        <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold">FP</div>
+        <div>
+          <p class="text-white text-xs font-semibold">Fofack Paul</p>
+          <p class="text-white/50 text-xs">Encadreur Principal</p>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ===================== MAIN CONTENT ===================== -->
+  <main class="ml-64 min-h-screen bg-gray-50 pb-24">
+
+    <!-- TOP BAR -->
+    <div class="bg-white border-b border-gray-100 sticky top-0 z-20 px-8 py-3 flex items-center justify-between shadow-sm">
+      <div class="flex items-center gap-2 text-gray-500 text-sm">
+        <i class="fa-solid fa-calendar-check text-blue-500"></i>
+        <span class="text-gray-400">/</span>
+        <span class="font-semibold text-gray-700">Présences</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2 bg-gray-50 rounded-full px-4 py-2 border border-gray-100 cursor-pointer hover:bg-gray-100 transition-colors relative">
+          <i class="fa-solid fa-bell text-gray-400 text-sm"></i>
+          <span class="absolute top-1.5 right-2.5 w-2 h-2 bg-red-500 rounded-full"></span>
+        </div>
+        <div class="flex items-center gap-3">
+          <div class="text-right hidden sm:block">
+            <p class="text-sm font-semibold text-gray-800">Fofack Paul</p>
+            <p class="text-xs text-gray-500">Encadreur</p>
+          </div>
+          <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center text-white font-bold text-sm shadow-md cursor-pointer">
+            FP
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-8 fade-in">
+
+      <!-- PAGE HEADER -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+        <div>
+          <h1 class="text-3xl font-extrabold text-gray-900 tracking-tight">
+            <i class="fa-solid fa-calendar-check text-blue-500 mr-2"></i>
+            Gestion des Présences
+          </h1>
+          <p class="mt-1 text-gray-500 font-medium flex items-center gap-2">
+            <i class="fa-regular fa-calendar text-blue-400 text-sm"></i>
+            Lundi 16 Juin 2026
+          </p>
+        </div>
+        <div class="flex items-center gap-3">
+          <button @click="exportExcel()"
+                  class="flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold px-5 py-2.5 rounded-xl shadow transition-all">
+            <i class="fa-solid fa-file-excel"></i>
+            Exporter Excel
+          </button>
+          <button @click="printPage()"
+                  class="flex items-center gap-2 bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 font-medium px-4 py-2.5 rounded-xl shadow-sm transition-all">
+            <i class="fa-solid fa-print text-gray-400"></i>
+            Imprimer
+          </button>
+        </div>
+      </div>
+
+      <!-- CONTROLS ROW -->
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 mb-6 flex flex-wrap items-center gap-4">
+        <div class="flex items-center gap-2">
+          <label class="text-sm font-semibold text-gray-600 whitespace-nowrap">
+            <i class="fa-regular fa-calendar text-blue-400 mr-1"></i>Date :
+          </label>
+          <input type="date" value="2026-06-16"
+                 class="border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 focus:ring-2 focus:ring-blue-400 focus:outline-none bg-gray-50" />
+        </div>
+        <div class="flex items-center gap-2">
+          <label class="text-sm font-semibold text-gray-600 whitespace-nowrap">
+            <i class="fa-regular fa-clock text-blue-400 mr-1"></i>Session :
+          </label>
+          <select x-model="selectedSession"
+                  class="border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 focus:ring-2 focus:ring-blue-400 focus:outline-none bg-gray-50 pr-8">
+            <option value="all">Toutes les sessions</option>
+            <option value="matin">Session Matin (08h–12h)</option>
+            <option value="apresmidi">Session Après-midi (13h–17h)</option>
+          </select>
+        </div>
+        <div class="ml-auto flex items-center gap-2 bg-blue-50 text-blue-700 text-sm font-semibold px-4 py-2 rounded-full border border-blue-100">
+          <i class="fa-solid fa-calendar-week text-blue-400"></i>
+          Semaine du 16 au 20 Juin 2026
+        </div>
+      </div>
+
+      <!-- SUMMARY STATS -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <!-- Présents -->
+        <div class="stat-card card-hover p-5 flex items-center gap-4">
+          <div class="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center flex-shrink-0">
+            <i class="fa-solid fa-circle-check text-emerald-500 text-2xl"></i>
+          </div>
+          <div>
+            <p class="text-3xl font-extrabold text-gray-900" x-text="stats.presents"></p>
+            <p class="text-sm text-gray-500 font-medium">Présents</p>
+          </div>
+          <div class="ml-auto">
+            <span class="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100">↑ 2</span>
+          </div>
+        </div>
+        <!-- Absents -->
+        <div class="stat-card card-hover p-5 flex items-center gap-4">
+          <div class="w-12 h-12 rounded-xl bg-red-50 flex items-center justify-center flex-shrink-0">
+            <i class="fa-solid fa-circle-xmark text-red-500 text-2xl"></i>
+          </div>
+          <div>
+            <p class="text-3xl font-extrabold text-gray-900" x-text="stats.absents"></p>
+            <p class="text-sm text-gray-500 font-medium">Absents</p>
+          </div>
+          <div class="ml-auto">
+            <span class="text-xs font-semibold text-red-600 bg-red-50 px-2 py-0.5 rounded-full border border-red-100">↓ 1</span>
+          </div>
+        </div>
+        <!-- Total -->
+        <div class="stat-card card-hover p-5 flex items-center gap-4">
+          <div class="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
+            <i class="fa-solid fa-users text-blue-500 text-2xl"></i>
+          </div>
+          <div>
+            <p class="text-3xl font-extrabold text-gray-900">25</p>
+            <p class="text-sm text-gray-500 font-medium">Total Stagiaires</p>
+          </div>
+          <div class="ml-auto">
+            <span class="text-xs font-semibold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100">8 affichés</span>
+          </div>
+        </div>
+        <!-- Taux -->
+        <div class="stat-card card-hover p-5 flex items-center gap-4">
+          <div class="w-12 h-12 rounded-xl bg-purple-50 flex items-center justify-center flex-shrink-0">
+            <i class="fa-solid fa-chart-pie text-purple-500 text-2xl"></i>
+          </div>
+          <div>
+            <p class="text-3xl font-extrabold text-gray-900" x-text="stats.taux + '%'"></p>
+            <p class="text-sm text-gray-500 font-medium">Taux de présence</p>
+          </div>
+          <div class="ml-auto">
+            <span class="text-xs font-semibold text-purple-600 bg-purple-50 px-2 py-0.5 rounded-full border border-purple-100">↑ 3%</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- WEEKLY CALENDAR VIEW -->
+      <div class="mb-8">
+        <h2 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2">
+          <i class="fa-solid fa-calendar-week text-blue-500"></i>
+          Vue Hebdomadaire
+        </h2>
+        <div class="grid grid-cols-5 gap-3">
+          <!-- Lundi 16 - TODAY highlighted -->
+          <div class="week-day-card bg-white rounded-2xl p-4 text-center border-2 border-blue-500 shadow-md relative">
+            <span class="absolute -top-2.5 left-1/2 -translate-x-1/2 text-xs font-bold bg-blue-500 text-white px-2 py-0.5 rounded-full whitespace-nowrap">Aujourd'hui</span>
+            <p class="text-xs font-bold text-blue-600 uppercase tracking-wide mt-2">Lundi</p>
+            <p class="text-2xl font-extrabold text-gray-800 mt-1">16</p>
+            <div class="w-14 h-14 mx-auto mt-3 rounded-full bg-emerald-100 flex flex-col items-center justify-center shadow-inner">
+              <span class="text-lg font-extrabold text-emerald-700">21</span>
+            </div>
+            <p class="mt-2 text-xs text-gray-500 font-medium">/ 25 présents</p>
+            <div class="mt-2 w-full bg-gray-100 rounded-full h-1.5">
+              <div class="bg-emerald-500 h-1.5 rounded-full" style="width:84%"></div>
+            </div>
+            <p class="mt-1 text-xs font-bold text-emerald-600">84%</p>
+          </div>
+          <!-- Mardi 17 -->
+          <div class="week-day-card bg-white rounded-2xl p-4 text-center border border-gray-100 shadow-sm">
+            <p class="text-xs font-bold text-gray-500 uppercase tracking-wide mt-2">Mardi</p>
+            <p class="text-2xl font-extrabold text-gray-800 mt-1">17</p>
+            <div class="w-14 h-14 mx-auto mt-3 rounded-full bg-emerald-100 flex flex-col items-center justify-center shadow-inner">
+              <span class="text-lg font-extrabold text-emerald-700">19</span>
+            </div>
+            <p class="mt-2 text-xs text-gray-500 font-medium">/ 25 présents</p>
+            <div class="mt-2 w-full bg-gray-100 rounded-full h-1.5">
+              <div class="bg-emerald-500 h-1.5 rounded-full" style="width:76%"></div>
+            </div>
+            <p class="mt-1 text-xs font-bold text-emerald-600">76%</p>
+          </div>
+          <!-- Mercredi 18 -->
+          <div class="week-day-card bg-white rounded-2xl p-4 text-center border border-gray-100 shadow-sm">
+            <p class="text-xs font-bold text-gray-500 uppercase tracking-wide mt-2">Mercredi</p>
+            <p class="text-2xl font-extrabold text-gray-800 mt-1">18</p>
+            <div class="w-14 h-14 mx-auto mt-3 rounded-full bg-emerald-100 flex flex-col items-center justify-center shadow-inner">
+              <span class="text-lg font-extrabold text-emerald-700">23</span>
+            </div>
+            <p class="mt-2 text-xs text-gray-500 font-medium">/ 25 présents</p>
+            <div class="mt-2 w-full bg-gray-100 rounded-full h-1.5">
+              <div class="bg-emerald-500 h-1.5 rounded-full" style="width:92%"></div>
+            </div>
+            <p class="mt-1 text-xs font-bold text-emerald-600">92%</p>
+          </div>
+          <!-- Jeudi 19 -->
+          <div class="week-day-card bg-white rounded-2xl p-4 text-center border border-gray-100 shadow-sm">
+            <p class="text-xs font-bold text-gray-500 uppercase tracking-wide mt-2">Jeudi</p>
+            <p class="text-2xl font-extrabold text-gray-800 mt-1">19</p>
+            <div class="w-14 h-14 mx-auto mt-3 rounded-full bg-yellow-100 flex flex-col items-center justify-center shadow-inner">
+              <span class="text-lg font-extrabold text-yellow-700">18</span>
+            </div>
+            <p class="mt-2 text-xs text-gray-500 font-medium">/ 25 présents</p>
+            <div class="mt-2 w-full bg-gray-100 rounded-full h-1.5">
+              <div class="bg-yellow-400 h-1.5 rounded-full" style="width:72%"></div>
+            </div>
+            <p class="mt-1 text-xs font-bold text-yellow-600">72%</p>
+          </div>
+          <!-- Vendredi 20 -->
+          <div class="week-day-card bg-white rounded-2xl p-4 text-center border border-gray-100 shadow-sm">
+            <p class="text-xs font-bold text-gray-500 uppercase tracking-wide mt-2">Vendredi</p>
+            <p class="text-2xl font-extrabold text-gray-800 mt-1">20</p>
+            <div class="w-14 h-14 mx-auto mt-3 rounded-full bg-emerald-100 flex flex-col items-center justify-center shadow-inner">
+              <span class="text-lg font-extrabold text-emerald-700">22</span>
+            </div>
+            <p class="mt-2 text-xs text-gray-500 font-medium">/ 25 présents</p>
+            <div class="mt-2 w-full bg-gray-100 rounded-full h-1.5">
+              <div class="bg-emerald-500 h-1.5 rounded-full" style="width:88%"></div>
+            </div>
+            <p class="mt-1 text-xs font-bold text-emerald-600">88%</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ATTENDANCE TABLE -->
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-6">
+        <div class="px-6 py-5 border-b border-gray-100 flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <h2 class="text-lg font-bold text-gray-900 flex items-center gap-2">
+              <i class="fa-solid fa-table-list text-blue-500"></i>
+              Feuille de Présences — Semaine du 16 au 20 Juin 2026
+            </h2>
+            <p class="text-sm text-gray-500 mt-0.5">Cliquez sur chaque cellule pour basculer l'état de présence</p>
+          </div>
+          <div class="flex items-center gap-3 text-xs font-semibold flex-wrap">
+            <span class="flex items-center gap-1.5 text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-100">
+              <i class="fa-solid fa-check text-emerald-500"></i> Présent
+            </span>
+            <span class="flex items-center gap-1.5 text-red-700 bg-red-50 px-2.5 py-1 rounded-full border border-red-100">
+              <i class="fa-solid fa-times text-red-500"></i> Absent
+            </span>
+            <span class="flex items-center gap-1.5 text-gray-500 bg-gray-50 px-2.5 py-1 rounded-full border border-gray-200">
+              <i class="fa-solid fa-minus text-gray-400"></i> N/R
+            </span>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="bg-gray-50 border-b border-gray-100">
+                <th class="text-left px-6 py-4 font-bold text-gray-600 min-w-48">Stagiaire</th>
+                <th class="text-center px-3 py-4 font-bold text-gray-600 w-20">
+                  <span class="block text-xs text-blue-500 font-semibold">Lun</span>
+                  <span class="text-xs text-gray-400 font-normal">16/06</span>
+                </th>
+                <th class="text-center px-3 py-4 font-bold text-gray-600 w-20">
+                  <span class="block text-xs font-semibold">Mar</span>
+                  <span class="text-xs text-gray-400 font-normal">17/06</span>
+                </th>
+                <th class="text-center px-3 py-4 font-bold text-gray-600 w-20">
+                  <span class="block text-xs font-semibold">Mer</span>
+                  <span class="text-xs text-gray-400 font-normal">18/06</span>
+                </th>
+                <th class="text-center px-3 py-4 font-bold text-gray-600 w-20">
+                  <span class="block text-xs font-semibold">Jeu</span>
+                  <span class="text-xs text-gray-400 font-normal">19/06</span>
+                </th>
+                <th class="text-center px-3 py-4 font-bold text-gray-600 w-20">
+                  <span class="block text-xs font-semibold">Ven</span>
+                  <span class="text-xs text-gray-400 font-normal">20/06</span>
+                </th>
+                <th class="text-center px-3 py-4 font-bold text-gray-600 w-20">Total</th>
+                <th class="text-center px-3 py-4 font-bold text-gray-600 w-20">Taux</th>
+                <th class="text-center px-3 py-4 font-bold text-gray-600 w-16">Actions</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-50">
+
+              <template x-for="(student, idx) in students" :key="student.name">
+                <tr class="hover:bg-blue-50/30 transition-colors group">
+                  <!-- Name + avatar -->
+                  <td class="px-6 py-4">
+                    <div class="flex items-center gap-3">
+                      <div class="w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0 shadow-sm"
+                           :class="avatarColor(idx)">
+                        <span x-text="initials(student.name)"></span>
+                      </div>
+                      <div>
+                        <p class="font-semibold text-gray-800" x-text="student.name"></p>
+                        <p class="text-xs text-gray-400" x-text="student.filiere"></p>
+                      </div>
+                    </div>
+                  </td>
+
+                  <!-- Attendance cells for each day -->
+                  <template x-for="day in ['L','M','Me','J','V']" :key="day">
+                    <td class="text-center px-3 py-4">
+                      <button
+                        @click="cycleState(student, day)"
+                        class="attendance-btn w-10 h-10 rounded-xl flex items-center justify-center mx-auto font-bold text-sm border-0 cursor-pointer focus:outline-none focus:ring-2 focus:ring-offset-1"
+                        :class="{
+                          'bg-emerald-100 text-emerald-700 hover:bg-emerald-200 focus:ring-emerald-400': student.attendance[day] === 'present',
+                          'bg-red-100 text-red-600 hover:bg-red-200 focus:ring-red-400': student.attendance[day] === 'absent',
+                          'bg-gray-100 text-gray-400 hover:bg-gray-200 focus:ring-gray-300': student.attendance[day] === 'nr'
+                        }"
+                        :title="stateLabel(student.attendance[day])">
+                        <i :class="{
+                          'fa-solid fa-check': student.attendance[day] === 'present',
+                          'fa-solid fa-times': student.attendance[day] === 'absent',
+                          'fa-solid fa-minus': student.attendance[day] === 'nr'
+                        }"></i>
+                      </button>
+                    </td>
+                  </template>
+
+                  <!-- Total -->
+                  <td class="text-center px-3 py-4">
+                    <span class="font-bold text-gray-700" x-text="presentCount(student) + '/5'"></span>
+                  </td>
+
+                  <!-- % Badge -->
+                  <td class="text-center px-3 py-4">
+                    <span class="inline-block px-2.5 py-1 rounded-full text-xs font-bold"
+                          :class="{
+                            'bg-emerald-100 text-emerald-700': pct(student) >= 80,
+                            'bg-yellow-100 text-yellow-700': pct(student) >= 60 && pct(student) < 80,
+                            'bg-red-100 text-red-700': pct(student) < 60
+                          }"
+                          x-text="pct(student) + '%'">
+                    </span>
+                  </td>
+
+                  <!-- Actions -->
+                  <td class="text-center px-3 py-4">
+                    <button class="w-8 h-8 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-500 hover:text-blue-700 flex items-center justify-center mx-auto transition-colors focus:outline-none focus:ring-2 focus:ring-blue-400">
+                      <i class="fa-solid fa-pen text-xs"></i>
+                    </button>
+                  </td>
+                </tr>
+              </template>
+
+              <!-- TOTAUX ROW -->
+              <tr class="bg-gray-50 border-t-2 border-gray-200 font-bold">
+                <td class="px-6 py-4 text-gray-700 font-extrabold">
+                  <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-sigma text-blue-500 text-xs"></i>
+                    Totaux
+                  </div>
+                </td>
+                <td class="text-center px-3 py-4">
+                  <span class="text-gray-800 font-extrabold" x-text="dayTotal('L')"></span>
+                  <span class="text-gray-400 text-xs font-normal">/8</span>
+                </td>
+                <td class="text-center px-3 py-4">
+                  <span class="text-gray-800 font-extrabold" x-text="dayTotal('M')"></span>
+                  <span class="text-gray-400 text-xs font-normal">/8</span>
+                </td>
+                <td class="text-center px-3 py-4">
+                  <span class="text-gray-800 font-extrabold" x-text="dayTotal('Me')"></span>
+                  <span class="text-gray-400 text-xs font-normal">/8</span>
+                </td>
+                <td class="text-center px-3 py-4">
+                  <span class="text-gray-800 font-extrabold" x-text="dayTotal('J')"></span>
+                  <span class="text-gray-400 text-xs font-normal">/8</span>
+                </td>
+                <td class="text-center px-3 py-4">
+                  <span class="text-gray-800 font-extrabold" x-text="dayTotal('V')"></span>
+                  <span class="text-gray-400 text-xs font-normal">/8</span>
+                </td>
+                <td class="text-center px-3 py-4">
+                  <span class="font-extrabold text-gray-800" x-text="totalPresents() + '/40'"></span>
+                </td>
+                <td class="text-center px-3 py-4">
+                  <span class="inline-block px-2.5 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-700"
+                        x-text="Math.round(totalPresents()/40*100) + '%'">
+                  </span>
+                </td>
+                <td class="px-3 py-4"></td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- SAVE / RESET BUTTONS -->
+      <div class="flex flex-wrap items-center gap-4 mb-8">
+        <button @click="saveAttendance()"
+                class="save-btn flex items-center gap-2 text-white font-bold px-8 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2">
+          <i class="fa-solid fa-floppy-disk"></i>
+          Enregistrer les présences
+        </button>
+        <button @click="resetAttendance()"
+                class="flex items-center gap-2 bg-white border-2 border-gray-200 text-gray-600 hover:bg-gray-50 hover:border-gray-300 font-semibold px-6 py-3 rounded-xl transition-all text-sm focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2">
+          <i class="fa-solid fa-rotate-left text-gray-400"></i>
+          Réinitialiser
+        </button>
+        <div x-show="saveMessage" x-transition.opacity
+             class="flex items-center gap-2 text-emerald-700 bg-emerald-50 border border-emerald-200 px-4 py-2.5 rounded-xl text-sm font-semibold">
+          <i class="fa-solid fa-circle-check text-emerald-500"></i>
+          <span x-text="saveMessage"></span>
+        </div>
+      </div>
+
+      <!-- NOTES SECTION -->
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
+        <h2 class="text-base font-bold text-gray-900 mb-1 flex items-center gap-2">
+          <i class="fa-solid fa-note-sticky text-yellow-500"></i>
+          Notes de session
+        </h2>
+        <p class="text-xs text-gray-400 mb-4">Ces remarques seront archivées et visibles par l'administration</p>
+        <textarea
+          x-model="sessionNotes"
+          rows="4"
+          placeholder="Ajouter des remarques sur la session (incidents, informations importantes, observations sur les stagiaires…)"
+          class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm text-gray-700 focus:ring-2 focus:ring-blue-400 focus:outline-none resize-none bg-gray-50 placeholder-gray-400 transition-colors"
+        ></textarea>
+        <div class="mt-3 flex items-center justify-between flex-wrap gap-3">
+          <p class="text-xs text-gray-400 flex items-center gap-1">
+            <i class="fa-solid fa-lock text-gray-300"></i>
+            Données sécurisées et chiffrées
+          </p>
+          <div class="flex items-center gap-3">
+            <button @click="sessionNotes = ''"
+                    class="text-sm text-gray-400 hover:text-gray-600 font-medium transition-colors">
+              Effacer
+            </button>
+            <button @click="submitNotes()"
+                    class="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold px-5 py-2 rounded-xl text-sm transition-all shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2">
+              <i class="fa-solid fa-paper-plane"></i>
+              Soumettre les notes
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- RECENT ABSENCES ALERT -->
+      <div class="bg-amber-50 border border-amber-200 rounded-2xl p-5 mb-6">
+        <h3 class="font-bold text-amber-800 flex items-center gap-2 mb-4">
+          <i class="fa-solid fa-triangle-exclamation text-amber-500"></i>
+          Alertes — Absences répétées cette semaine
+        </h3>
+        <div class="space-y-3">
+          <div class="flex items-center justify-between bg-white rounded-xl px-4 py-3 border border-amber-100 shadow-sm">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-full bg-orange-100 flex items-center justify-center text-orange-700 text-xs font-bold">TL</div>
+              <div>
+                <p class="text-sm font-semibold text-gray-800">Tchamba Lea</p>
+                <p class="text-xs text-gray-500">2 absences cette semaine &mdash; Taux : 60%</p>
+              </div>
+            </div>
+            <button class="text-xs bg-amber-100 hover:bg-amber-200 text-amber-700 font-semibold px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5">
+              <i class="fa-solid fa-envelope"></i>Notifier
+            </button>
+          </div>
+          <div class="flex items-center justify-between bg-white rounded-xl px-4 py-3 border border-amber-100 shadow-sm">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-full bg-purple-100 flex items-center justify-center text-purple-700 text-xs font-bold">MD</div>
+              <div>
+                <p class="text-sm font-semibold text-gray-800">Mbarga Didier</p>
+                <p class="text-xs text-gray-500">2 absences cette semaine &mdash; Taux : 60%</p>
+              </div>
+            </div>
+            <button class="text-xs bg-amber-100 hover:bg-amber-200 text-amber-700 font-semibold px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5">
+              <i class="fa-solid fa-envelope"></i>Notifier
+            </button>
+          </div>
+          <div class="flex items-center justify-between bg-white rounded-xl px-4 py-3 border border-amber-100 shadow-sm">
+            <div class="flex items-center gap-3">
+              <div class="w-9 h-9 rounded-full bg-teal-100 flex items-center justify-center text-teal-700 text-xs font-bold">AJ</div>
+              <div>
+                <p class="text-sm font-semibold text-gray-800">Atangana Jules</p>
+                <p class="text-xs text-gray-500">2 absences cette semaine &mdash; Taux : 60%</p>
+              </div>
+            </div>
+            <button class="text-xs bg-amber-100 hover:bg-amber-200 text-amber-700 font-semibold px-3 py-1.5 rounded-lg transition-colors flex items-center gap-1.5">
+              <i class="fa-solid fa-envelope"></i>Notifier
+            </button>
+          </div>
+        </div>
+        <div class="mt-4 pt-3 border-t border-amber-100 flex justify-end">
+          <button class="text-xs bg-amber-600 hover:bg-amber-700 text-white font-semibold px-4 py-2 rounded-lg transition-colors flex items-center gap-1.5 shadow-sm">
+            <i class="fa-solid fa-envelope-bulk"></i>
+            Notifier tous les absents
+          </button>
+        </div>
+      </div>
+
+      <!-- QUICK STATS MINI BAR -->
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-5 mb-6">
+        <h3 class="text-sm font-bold text-gray-700 mb-4 flex items-center gap-2">
+          <i class="fa-solid fa-chart-bar text-blue-400"></i>
+          Récapitulatif hebdomadaire par stagiaire
+        </h3>
+        <div class="space-y-3">
+          <template x-for="(student, idx) in students" :key="'bar-' + student.name">
+            <div class="flex items-center gap-3">
+              <div class="w-28 text-xs font-semibold text-gray-600 truncate" x-text="student.name.split(' ')[0]"></div>
+              <div class="flex-1 bg-gray-100 rounded-full h-2.5 relative">
+                <div class="h-2.5 rounded-full transition-all duration-500"
+                     :class="{
+                       'bg-emerald-500': pct(student) >= 80,
+                       'bg-yellow-400': pct(student) >= 60 && pct(student) < 80,
+                       'bg-red-400': pct(student) < 60
+                     }"
+                     :style="'width:' + pct(student) + '%'">
+                </div>
+              </div>
+              <span class="w-10 text-right text-xs font-bold"
+                    :class="{
+                      'text-emerald-700': pct(student) >= 80,
+                      'text-yellow-700': pct(student) >= 60 && pct(student) < 80,
+                      'text-red-600': pct(student) < 60
+                    }"
+                    x-text="pct(student) + '%'">
+              </span>
+            </div>
+          </template>
+        </div>
+      </div>
+
+      <!-- FOOTER INFO -->
+      <div class="text-center text-xs text-gray-400 mt-6 pb-4 flex items-center justify-center gap-2">
+        <i class="fa-solid fa-shield-halved text-blue-300"></i>
+        StagesPro Cameroun &mdash; Gestion des Présences &mdash; Encadreur : Fofack Paul
+        <span class="text-gray-200 mx-1">|</span>
+        Données enregistrées automatiquement toutes les 5 minutes
+      </div>
+
+    </div><!-- /p-8 -->
+  </main>
+
+  <!-- MOBILE BOTTOM NAV -->
+  <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 shadow-xl z-40 flex lg:hidden">
+    <a href="dashboard-encadreur.html" class="flex-1 flex flex-col items-center py-3 text-gray-400 hover:text-blue-500 transition-colors">
+      <i class="fa-solid fa-house text-lg"></i>
+      <span class="text-xs mt-0.5">Accueil</span>
+    </a>
+    <a href="mes-stagiaires.html" class="flex-1 flex flex-col items-center py-3 text-gray-400 hover:text-blue-500 transition-colors">
+      <i class="fa-solid fa-users text-lg"></i>
+      <span class="text-xs mt-0.5">Stagiaires</span>
+    </a>
+    <a href="presences.html" class="flex-1 flex flex-col items-center py-3 text-blue-600">
+      <div class="relative">
+        <i class="fa-solid fa-calendar-check text-lg"></i>
+        <span class="absolute -top-1 -right-1 w-2 h-2 bg-blue-500 rounded-full"></span>
+      </div>
+      <span class="text-xs mt-0.5 font-semibold">Présences</span>
+    </a>
+    <a href="#" class="flex-1 flex flex-col items-center py-3 text-gray-400 hover:text-blue-500 transition-colors">
+      <i class="fa-solid fa-user text-lg"></i>
+      <span class="text-xs mt-0.5">Profil</span>
+    </a>
+  </nav>
+
+  <!-- ===================== ALPINE.JS LOGIC ===================== -->
+  <script>
+    function presencesApp() {
+      return {
+        selectedSession: 'all',
+        sessionNotes: '',
+        saveMessage: '',
+
+        students: [
+          {
+            name: 'Kouam Eric',
+            filiere: 'Génie Logiciel',
+            attendance: { L: 'present', M: 'present', Me: 'absent',   J: 'present', V: 'present' }
+          },
+          {
+            name: 'Ngono Marie',
+            filiere: 'Réseaux & Télécoms',
+            attendance: { L: 'present', M: 'present', Me: 'present',  J: 'present', V: 'present' }
+          },
+          {
+            name: 'Tchamba Lea',
+            filiere: 'Développement Web',
+            attendance: { L: 'present', M: 'absent',  Me: 'present',  J: 'absent',  V: 'present' }
+          },
+          {
+            name: 'Bello Samuel',
+            filiere: 'Systèmes Embarqués',
+            attendance: { L: 'present', M: 'present', Me: 'present',  J: 'present', V: 'absent'  }
+          },
+          {
+            name: 'Kameni Rose',
+            filiere: 'Intelligence Artificielle',
+            attendance: { L: 'present', M: 'present', Me: 'present',  J: 'present', V: 'present' }
+          },
+          {
+            name: 'Mbarga Didier',
+            filiere: 'Cybersécurité',
+            attendance: { L: 'absent',  M: 'present', Me: 'absent',   J: 'present', V: 'present' }
+          },
+          {
+            name: 'Atangana Jules',
+            filiere: 'Génie Logiciel',
+            attendance: { L: 'present', M: 'absent',  Me: 'absent',   J: 'present', V: 'present' }
+          },
+          {
+            name: 'Nkeng Sylvie',
+            filiere: 'Base de Données',
+            attendance: { L: 'present', M: 'present', Me: 'present',  J: 'absent',  V: 'present' }
+          }
+        ],
+
+        avatarColors: [
+          'bg-blue-500', 'bg-emerald-500', 'bg-purple-500', 'bg-orange-500',
+          'bg-pink-500', 'bg-teal-500', 'bg-indigo-500', 'bg-cyan-500'
+        ],
+
+        avatarColor(idx) {
+          return this.avatarColors[idx % this.avatarColors.length];
+        },
+
+        initials(name) {
+          return name.split(' ').map(p => p[0]).join('').toUpperCase().slice(0, 2);
+        },
+
+        // Cycle through: present -> absent -> nr -> present
+        cycleState(student, day) {
+          const states = ['present', 'absent', 'nr'];
+          const cur = student.attendance[day];
+          const idx = states.indexOf(cur);
+          student.attendance[day] = states[(idx + 1) % states.length];
+        },
+
+        stateLabel(state) {
+          const labels = { present: 'Présent — cliquer pour marquer Absent', absent: 'Absent — cliquer pour Non renseigné', nr: 'Non renseigné — cliquer pour Présent' };
+          return labels[state] || 'Non renseigné';
+        },
+
+        presentCount(student) {
+          return Object.values(student.attendance).filter(v => v === 'present').length;
+        },
+
+        pct(student) {
+          return Math.round(this.presentCount(student) / 5 * 100);
+        },
+
+        dayTotal(day) {
+          return this.students.filter(s => s.attendance[day] === 'present').length;
+        },
+
+        totalPresents() {
+          return this.students.reduce((acc, s) => acc + this.presentCount(s), 0);
+        },
+
+        get stats() {
+          const presents = this.students.filter(s => s.attendance['L'] === 'present').length;
+          const absents  = this.students.filter(s => s.attendance['L'] === 'absent').length;
+          const total    = this.students.length;
+          const taux     = total > 0 ? Math.round(presents / total * 100) : 0;
+          return { presents, absents, total, taux };
+        },
+
+        saveAttendance() {
+          this.saveMessage = 'Présences enregistrées avec succès !';
+          const self = this;
+          setTimeout(() => { self.saveMessage = ''; }, 3500);
+        },
+
+        resetAttendance() {
+          if (confirm('Réinitialiser toutes les présences de la semaine ? Cette action est irréversible.')) {
+            this.students.forEach(s => {
+              const days = ['L','M','Me','J','V'];
+              days.forEach(day => { s.attendance[day] = 'nr'; });
+            });
+            this.saveMessage = 'Feuille de présences réinitialisée.';
+            const self = this;
+            setTimeout(() => { self.saveMessage = ''; }, 3000);
+          }
+        },
+
+        submitNotes() {
+          if (this.sessionNotes.trim()) {
+            this.saveMessage = 'Notes de session soumises avec succès !';
+            const self = this;
+            setTimeout(() => { self.saveMessage = ''; }, 3500);
+          } else {
+            alert('Veuillez saisir des notes avant de soumettre.');
+          }
+        },
+
+        exportExcel() {
+          alert('Export Excel — fonctionnalité disponible dans la version complète de StagesPro.');
+        },
+
+        printPage() {
+          window.print();
+        }
+      };
+    }
+  </script>
+
+</body>
+</html>
