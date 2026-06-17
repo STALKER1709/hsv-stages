@@ -47,6 +47,10 @@ COPY deploy/nginx.conf /etc/nginx/nginx.conf
 # Copy supervisor config
 COPY deploy/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
+# Startup script (handles Railway's dynamic $PORT, cache warmup, migrations)
+COPY deploy/railway/start.sh /start.sh
+RUN chmod +x /start.sh
+
 EXPOSE 80
 
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+CMD ["/start.sh"]
