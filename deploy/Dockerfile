@@ -15,11 +15,13 @@ RUN apk add --no-cache \
     unzip \
     oniguruma-dev \
     libxml2-dev \
-    mysql-client
+    mysql-client \
+    postgresql-client \
+    postgresql-dev
 
 # Install PHP extensions
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd xml
+    && docker-php-ext-install pdo pdo_mysql pdo_pgsql mbstring exif pcntl bcmath gd xml
 
 # Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
