@@ -65,6 +65,9 @@
                         <span class="text-xs px-2 py-1 rounded-full {{ $s->paiement->statut === 'valide' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-yellow-500/20 text-yellow-400' }}">
                             {{ $s->paiement->statut === 'valide' ? '✓ Payé' : '⏳ Attente' }}
                         </span>
+                        @if($s->paiement->preuve_paiement)
+                        <a href="{{ asset('storage/' . $s->paiement->preuve_paiement) }}" target="_blank" rel="noopener" class="text-xs text-emerald-400 hover:underline ml-1">Preuve</a>
+                        @endif
                         @endif
                     </td>
                     <td class="px-5 py-4">

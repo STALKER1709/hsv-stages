@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\InscriptionConfirmee;
 use App\Models\Pole;
 use App\Models\Paiement;
 use App\Models\Stagiaire;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 
 class InscriptionController extends Controller
 {
@@ -32,9 +34,10 @@ class InscriptionController extends Controller
             'pole_id'        => 'required|exists:poles,id',
             'paiement'       => 'required|in:orange_money,mtn_momo,especes',
             'numero_paiement'=> 'nullable|string|max:20',
+            'preuve_paiement'=> 'nullable|image|max:5120',
         ]);
 
-        DB::transaction(function () use ($request) {
+        $stagiaire = DB::transaction(function () use ($request) {
             $user = User::create([
                 'name'      => $request->prenom . ' ' . strtoupper($request->nom),
                 'email'     => $request->email,
@@ -59,8 +62,13 @@ class InscriptionController extends Controller
                 'methode'          => $request->paiement,
                 'statut'           => 'en_attente',
                 'numero_telephone' => $request->numero_paiement ?? $request->telephone,
+                'preuve_paiement'  => $request->file('preuve_paiement')?->store('preuves-paiement', 'public'),
             ]);
+
+            return $stagiaire;
         });
+
+        Mail::to($stagiaire->user->email)->send(new InscriptionConfirmee($stagiaire));
 
         return redirect()->route('login')->with('success',
             'Inscription enregistrée ! Connectez-vous avec votre email. Mot de passe = 6 derniers chiffres de votre téléphone.'

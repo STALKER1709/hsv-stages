@@ -21,7 +21,7 @@ class Paiement extends Model
 
     protected $fillable = [
         'stagiaire_id', 'montant', 'methode', 'statut',
-        'reference', 'numero_telephone', 'valide_le', 'valide_par',
+        'reference', 'numero_telephone', 'preuve_paiement', 'valide_le', 'valide_par',
     ];
 
     protected $casts = ['valide_le' => 'datetime'];

@@ -31,7 +31,7 @@
                     @endforeach
                 </div>
             @endif
-            <form method="POST" action="{{ route('inscription.store') }}">
+            <form method="POST" action="{{ route('inscription.store') }}" enctype="multipart/form-data">
                 @csrf
                 <!-- Step 1: Personal Info -->
                 <div x-show="step === 1">
@@ -140,6 +140,14 @@
                     <div x-show="methode && methode !== 'especes'" class="mb-4">
                         <label class="block text-sm text-slate-300 mb-2">Numéro de paiement</label>
                         <input type="text" name="numero_paiement" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500" placeholder="+237 6XX XXX XXX">
+                    </div>
+                    <div x-show="methode && methode !== 'especes'" class="mb-4">
+                        <label class="block text-sm text-slate-300 mb-2">Capture d'écran du paiement</label>
+                        <input type="file" name="preuve_paiement" accept="image/*" class="w-full text-sm text-slate-300 bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 focus:outline-none focus:border-emerald-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:bg-emerald-500 file:text-slate-900 file:font-semibold">
+                        <p class="text-xs text-slate-500 mt-2">
+                            Pas de capture sous la main ? Envoyez-la directement sur
+                            <a href="{{ \App\Support\WhatsAppLink::make(config('services.contact.whatsapp_number'), 'Bonjour, je viens de faire le paiement de mon inscription au stage HSV Stages, voici ma preuve de paiement :') }}" target="_blank" rel="noopener" class="text-emerald-400 hover:underline">WhatsApp</a>.
+                        </p>
                     </div>
                     <div class="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-4 mb-6">
                         <div class="flex justify-between items-center">
