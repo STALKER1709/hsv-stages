@@ -35,4 +35,10 @@ return [
         ],
     ],
 
+    'contact' => [
+        'whatsapp_number' => env('WHATSAPP_NUMBER', '+237690000000'),
+        'orange_money_number' => env('ORANGE_MONEY_NUMBER', '+237690000000'),
+        'mtn_momo_number' => env('MTN_MOMO_NUMBER', '+237670000000'),
+    ],
+
 ];
